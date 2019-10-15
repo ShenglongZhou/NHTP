@@ -40,4 +40,5 @@ end
 ylabel('Success Rate');
 axis([min(test0) max(test0) 0 1]); grid on;
 legend('NHTP','Location','NorthEast'); hold on 
-
+saveas(figure(1), 'outputs\SuccessRate.eps','epsc');
+saveas(figure(1), 'outputs\SuccessRate.fig');
