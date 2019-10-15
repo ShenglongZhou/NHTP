@@ -12,12 +12,10 @@ data.b    = label.b;
 clear measure label;
 
 s         = ceil(0.01*m);
-
 pars.eta  = 1;
 func      = @(x,fgh,T1,T2)logistic_regression(x,fgh,T1,T2,data);
 out       = NHTP(n,s,func);
 
-if isfield(pars,'draw') && pars.draw
 saveas(figure(1), [pwd strcat(strcat('/outputs/',prob))]);  
 saveas(figure(1), [pwd strcat(strcat('/outputs/',prob),'.eps')],'epsc');
-end
+
