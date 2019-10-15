@@ -13,7 +13,6 @@ fun        = @(x,T)(data.M(:,T)*x(T)+data.q);
 out0       = HTPCP(n, fun , pars0)  
 
 % Second phase
-pars.draw= 1;
 pars.x0  = out0.x;
 func     = @(x,fgh,T1,T2)slcp(x,fgh,T1,T2,data);
 out      = NHTP(n,s,func,pars)  
