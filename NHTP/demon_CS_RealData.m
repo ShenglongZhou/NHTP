@@ -16,8 +16,6 @@ out       = NHTP(n,s,func,pars)
 fprintf('\nSample size:       m=%4d,n=%4d\n', m,n);
 fprintf('CPU time:         %6.3fsec\n',  out.time);
 fprintf('Objective value:   %5.3e\n\n', out.obj);
-
-if isfield(pars,'draw') && pars.draw
 saveas(figure(1), 'outputs\DriverFaces.fig');
 saveas(figure(1), 'outputs\DriverFaces.eps','epsc');
-end
+
