@@ -9,7 +9,7 @@ s         = 10;
 data.A    = A/sqrt(m);
 data.b    = y/sqrt(m);
 data.At   = data.A';
-pars.draw = 1;
+pars.eta  = 1;
 func      = @(x,fgh,T1,T2)compressed_sensing(x,fgh,T1,T2,data);
 out       = NHTP(n,s,func,pars)  
 
