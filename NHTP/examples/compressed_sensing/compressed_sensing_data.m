@@ -17,7 +17,7 @@ function data = compressed_sensing_data(problemname,m,n,s,nf )
 % written by Shenglong Zhou, 13/10/2018
 
 start = tic;
-fprintf('Start to generate the compressed sensing data...\n'); 
+fprintf(' Start to generate the compressed sensing data...\n'); 
 
 A = zeros(m,n);
  
