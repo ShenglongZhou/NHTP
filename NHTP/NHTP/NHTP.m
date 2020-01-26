@@ -116,7 +116,7 @@ T0      = zeros(s,1);
 Error   = zeros(1,itmax);
 Obj     = zeros(1,itmax);
 
-fprintf(' Start to run the sover...\n'); 
+fprintf(' Start to run the solver...\n'); 
 if display 
 fprintf('\n Iter             Error                Ojective \n'); 
 fprintf('--------------------------------------------------------\n');
