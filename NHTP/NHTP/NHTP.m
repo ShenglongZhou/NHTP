@@ -125,7 +125,9 @@ end
 % Initial check for the starting point
 if FNorm(g)==0 && nnz(x)<=s
 fprintf('Starting point is a good stationary point, try another one...\n'); 
-return;  
+Out.sol = x;
+Out.obj = obj;
+return;
 end
 
 if max(isnan(g))
