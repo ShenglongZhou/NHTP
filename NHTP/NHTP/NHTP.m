@@ -116,8 +116,8 @@ T0      = zeros(s,1);
 Error   = zeros(1,itmax);
 Obj     = zeros(1,itmax);
 
-fprintf(' Start to run the solver...\n'); 
 if display 
+fprintf(' Start to run the solver...\n'); 
 fprintf('\n Iter             Error                Ojective \n'); 
 fprintf('--------------------------------------------------------\n');
 end
@@ -283,17 +283,21 @@ if draw
     PlotFun(Error,iter,'r.-','error') 
 end
 
-fprintf('\n--------------------------------------------------------\n');
 
-if  Out.normgrad<1e-5
-fprintf(' A global optimal solution might be found\n');
-fprintf(' because of ||gradient||=%5.2e!\n',Out.normgrad); 
-if Out.iter>1500
-fprintf('\n Since the number of iterations reaches to %d\n',Out.iter);
-fprintf(' Try to rerun the solver with a smaller pars.eta=%5.2e\n',Out.eta); 
+if display 
+   fprintf('\n--------------------------------------------------------\n');
+   if Out.normgrad<1e-5
+      fprintf(' A global optimal solution might be found\n');
+      fprintf(' because of ||gradient||=%5.2e!\n',Out.normgrad); 
+   if Out.iter>1500
+      fprintf('\n Since the number of iterations reaches to %d\n',Out.iter);
+      fprintf(' Try to rerun the solver with a smaller pars.eta=%5.2e\n',Out.eta); 
+   end
+   fprintf('--------------------------------------------------------\n');
 end
-fprintf('--------------------------------------------------------\n');
+
 end
+
 
 end
 
