@@ -169,7 +169,7 @@ for iter = 1:itmax
         if s   < pcgs0
         d      = -H\g(T);
         else
-        d      = -pcg(H,g(T),pcgtol,50); 
+        [d,~]  = pcg(H,-g(T),pcgtol,50); 
         end
         dg     =  sum(d.*g(T));
         if dg  >  max(-delta*FNorm(d), -FNorm(g(T))) || isnan(dg) 
@@ -181,7 +181,7 @@ for iter = 1:itmax
         if s   < pcgs0
         d      = H\( D*x0(TTc)- g(T));
         else
-        d      = pcg(H,D*x0(TTc)- g(T), pcgtol,50); 
+        [d,~]  = pcg(H,D*x0(TTc)- g(T), pcgtol,50); 
         end
         Fnz    = FNorm(x(TTc))/4/eta;
         dgT    = sum(d.*g(T));
