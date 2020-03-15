@@ -63,7 +63,7 @@ if nargin>=3
           if ns0==s
           [~,T]    = maxk(pars.x0,s,'ComparisonMethod','abs'); 
           x0       = pars.x0;  
-          pars.eta = min(x0(T))/(1+max(abs(g(setdiff(1:n, T)))));   
+          pars.eta = min(abs(x0(T)))/(1+max(abs(g(setdiff(1:n, T)))));   
           elseif ns0<s
           x0        = pars.x0;  
           pars.eta  = max(x0(x0>0.1))/(1+max(abs(g)));   
