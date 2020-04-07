@@ -62,7 +62,7 @@ data.b     = data.A(:,I)*x_opt(I)+nf*randn(m,1);    % required
 data.At    = data.A';                               % required
 
 data.x_opt = x_opt;                                 % optional
-
+clear A x_opt I0 I
 fprintf(' Data generation used %2.4f seconds.\n\n',toc(start)); 
 
 end
