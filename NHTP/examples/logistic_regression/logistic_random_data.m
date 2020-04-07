@@ -73,7 +73,7 @@ data.b  = b;                   % required
 data.At = A';                  % required
 
 data.x  = x;                   % optional
-
+clear A b x Ax I0 I
 fprintf(' Data generation used %2.4f seconds.\n\n',toc(start)); 
 
 end
