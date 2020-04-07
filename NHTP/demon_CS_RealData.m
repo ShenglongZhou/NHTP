@@ -6,8 +6,8 @@ load 'nlab.mat';   %'identity.mat';
 
 [m,n]     = size(A);
 s         = 10;
-data.A    = A/sqrt(m);
-data.b    = y/sqrt(m);
+data.A    = A/sqrt(m); clear A
+data.b    = y/sqrt(m); clear y
 data.At   = data.A';
 pars.eta  = 1;
 func      = @(x,fgh,T1,T2)compressed_sensing(x,fgh,T1,T2,data);
