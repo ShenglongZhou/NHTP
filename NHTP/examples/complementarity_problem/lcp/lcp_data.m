@@ -51,7 +51,7 @@ data.Mt   = Mt;
 data.q    = q;
 data.n    = n;
 data.xopt = xopt;
-
+clear M Mt xopt Mx q Z
 fprintf(' Data generation used %2.4f seconds.\n\n',toc(start)); 
 end
 
