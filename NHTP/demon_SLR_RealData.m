@@ -13,7 +13,7 @@ clear measure label;
 
 s         = ceil(0.01*m);
 pars.eta  = 1;
-func      = @(x,fgh,T1,T2)logistic_regression(x,fgh,T1,T2,data);
+func      = @(x,fgh,T1,T2)logistic_regression(x,fgh,T1,T2,data); clear data
 out       = NHTP(n,s,func);
 
 saveas(figure(1), [pwd strcat(strcat('/outputs/',prob))]);  
