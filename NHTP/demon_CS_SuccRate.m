@@ -34,7 +34,7 @@ for j        = 1:length(sm)
 end
 
 xlab = {'s','m/n'};
-figure, plot(sm,SucRate/noS,'r*-'), 
+figure(1), plot(sm,SucRate/noS,'r*-'), 
 xlabel(xlab{test}), ylabel('Success Rate') 
 axis([min(sm) max(sm) 0 1]); grid on;
 legend('NHTP','Location','NorthEast'); hold on 
