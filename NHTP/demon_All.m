@@ -38,7 +38,7 @@ end
 pars.draw = 1;
 fun       = str2func(funcname);
 func      = @(x,fgh,T1,T2)fun(x,fgh,T1,T2,data);
-out       = NHTP(n,s,func,pars);
+out       = NHTP(n,s,func,pars) 
 
 
  
