@@ -1,7 +1,7 @@
 % demon sparse logistic regression problems with randomly generated data
 clc; clear; close all;
 
-n    = 2000;  
+n    = 10000;  
 m    = ceil(n/5); 
 s    = ceil(0.05*n);
 test = 2;                     
