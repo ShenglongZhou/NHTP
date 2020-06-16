@@ -13,7 +13,7 @@ fun        = @(x,T)(data.M(:,T)*x(T)+data.q);
 out0       = HTPCP(n, fun , pars0)  
 
 % Second phase
-if  exist('out0 ')
+if  exist('out0')
     pars.x0  = out0.x;
 else
     pars.x0 = zeros(n,1);
