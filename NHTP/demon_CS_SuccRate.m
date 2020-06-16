@@ -1,7 +1,7 @@
 % This code presents the success recovery rate of NHTP
 clc; clear; close all; 
 
-test    = 2; %=1 succ rate v.s. s; =2 succ rate v.s. m/n
+test    = 1; %=1 succ rate v.s. s; =2 succ rate v.s. m/n
 ExMat   = 1; %=1 Gaussian matrix;  =2 Partial DCT matrix
 
 n       = 256; 
