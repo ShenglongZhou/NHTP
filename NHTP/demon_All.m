@@ -3,7 +3,7 @@ clc; clear; close all;
 ExNam   = 1; %= 1, 2, 3, 4 or 5                          
 ExMat   = 2; %= 1 or 2
 
-n       = 1000;  
+n       = 10000;  
 m       = ceil(0.25*n); 
 s       = ceil(0.05*n);
  
