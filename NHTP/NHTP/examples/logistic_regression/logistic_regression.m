@@ -27,7 +27,7 @@ function [out1,out2] = logistic_regression(x,fgh,T1,T2,data)
         d    = eXx.*(1-eXx)/m; 
         XT   = data.A(:,T1);
         s    = length(T1);
-        if s <  1500
+        if s <  2000
             out1 = (d.*XT)'*XT + mu*speye(s);           %submatrix  containing T1 rows and T1 columns of Hessian
         else
             out1 = @(v)( mu*v+( (d.*(XT*v))'*XT )' );
