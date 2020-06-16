@@ -4,7 +4,7 @@ clc; clear; close all;
 test    = 2; %=1 succ rate v.s. s; =2 succ rate v.s. m/n
 ExMat   = 1; %=1 Gaussian matrix;  =2 Partial DCT matrix
 
-n       = 200; 
+n       = 256; 
 m       = ceil(0.25*n);
 s       = ceil(0.05*n);
 noS     = 100;
