@@ -11,7 +11,7 @@ noS     = 100;
 MatType = {'GaussianMat','PartialDCTMat'};
 switch  test
 case 1; sm = ceil(linspace(6,36,15));
-case 2; sm = linspace(0.08,0.24,12);
+case 2; sm = linspace(0.1,0.3,12);
 end    
     
 SucRate      = [];
