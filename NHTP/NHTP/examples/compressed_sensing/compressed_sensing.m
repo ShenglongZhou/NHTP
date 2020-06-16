@@ -10,10 +10,12 @@ function [out1,out2] = compressed_sensing(x,fgh,T1,T2,data)
         end
     case 'Hess'
         
-        if length(T1)<5e3
-        out1 = data.At(T1,:)*data.A(:,T1);     %submatrix containing T1 rows and T1 columns of Hessian
+        if  length(T1)<2000
+            out1 = data.At(T1,:)*data.A(:,T1);     %submatrix containing T1 rows and T1 columns of Hessian
         else
-        out1 = @(v)(data.At(T1,:)*(data.A(:,T1)*v));      
+            AT1  = data.A(:,T1);
+            out1 = @(v)((AT1*v)'*AT1)'; 
+            %out1 = @(v)(data.At(T1,:)*(data.A(:,T1)*v));      
         end
         
         if nargout>1
