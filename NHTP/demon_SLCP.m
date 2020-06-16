@@ -1,6 +1,6 @@
 % demon sparse complementarity problems by two phases procedure
 clc; clear; close all;                    
-n       = 2000;  
+n       = 10000;  
 s       = ceil(0.01*n);
 ExMat   = 2; %= 1, 2, 3
 
