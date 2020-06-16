@@ -51,6 +51,203 @@ if nargin>=3
     if isfield(pars,'tol');    tol     = pars.tol;    else; tol     = 1e-6; end  
     if isfield(pars,'x0');     x0      = pars.x0;     else; x0 = zeros(n,1);end 
     
+   [x0,obj,g,eta] = getparameters(n,s,x0,func,pars);     
+end
+   
+x       = x0;
+beta    = 0.5;
+sigma   = 5e-5;
+I       = 1:n;
+delta   = 1e-10;
+pcgtol  = tol*s;
+T0      = zeros(s,1);
+Error   = zeros(1,itmax);
+Obj     = zeros(1,itmax);
+FNorm   = @(x)norm(x)^2;
+
+if display 
+fprintf(' Start to run the solver...\n'); 
+fprintf('\n Iter             Error                Ojective \n'); 
+fprintf('------------------------------------------------\n');
+end
+
+% Initial check for the starting point
+if FNorm(g)==0 && nnz(x)<=s
+fprintf('Starting point is a good stationary point, try another one...\n'); 
+Out.sol = x;
+Out.obj = obj;
+return;
+end
+
+if max(isnan(g))
+x0      = zeros(n,1);
+rind    = randi(n);
+x0(rind)= rand;
+[obj,g] = func(x0,'ObjGrad',[],[]);
+end
+ 
+% The main body  
+for iter = 1:itmax
+     
+    xtg   = x0-eta*g;
+    [~,T] = maxk(abs(xtg),s); 
+    flag  = isempty(setdiff(T,T0));          
+    Tc    = setdiff(I,T);
+    
+    % Calculate the error for stopping criteria   
+    xtaus       = max(0,max(abs(g(Tc)))-min(abs(x(T)))/eta);
+    if flag
+    FxT         = sqrt(FNorm(g(T)));
+    Error(iter) = xtaus + FxT;
+    else
+    FxT         = sqrt(FNorm(g(T))+ FNorm(x(Tc)));
+    Error(iter) = xtaus + FxT;    
+    end
+     
+    if display 
+    fprintf('%4d             %5.2e              %5.2e\n',iter,Error(iter),obj); 
+    end
+             
+    % Stopping criteria
+    if Error(iter)<tol; break;  end
+    
+    
+    % update next iterate
+    if  iter   == 1 || flag           % update next iterate if T==supp(x^k)     
+        H       =  func(x0,'Hess',T,[]); 
+        if ~isa(H,'function_handle')
+            d   = -H\g(T);
+        else
+           [d,~]= pcg(H,-g(T),pcgtol,50); 
+        end
+        dg      = sum(d.*g(T));
+        ngT     = FNorm(g(T));
+        if dg   > max(-delta*FNorm(d), -ngT) || isnan(dg) 
+        d       = -g(T); 
+        dg      = ngT; 
+        end
+    else                              % update next iterate if T~=supp(x^k)
+        TTc     = intersect(T0,Tc); 
+        [H,D]   = func(x0,'Hess',T,TTc);
+        
+        if isa(D,'function_handle')
+           Dx   = D(x0(TTc));
+        else
+           Dx   = D*x0(TTc);
+        end
+        
+        if ~isa(H,'function_handle')
+            d   = H\( Dx- g(T));
+        else
+           [d,~]= pcg(H,Dx- g(T), pcgtol,50); 
+        end
+        
+        Fnz     = FNorm(x(TTc))/4/eta;
+        dgT     = sum(d.*g(T));
+        dg      = dgT-sum(x0(TTc).*g(TTc));
+        
+        delta0  = delta;
+        if Fnz  > 1e-4; delta0 = 1e-4; end
+        ngT     = FNorm(g(T));
+        if dgT  > max(-delta0*FNorm(d)+Fnz, -ngT) || isnan(dg) 
+        d       = -g(T); 
+        dg      = ngT; 
+        end            
+    end
+    
+
+    alpha    = 1; 
+    x(Tc)    = 0;    
+    obj0     = obj;        
+    Obj(iter)= obj;
+    
+    % Amijio line search
+    for i      = 1:6
+        x(T)   = x0(T) + alpha*d;
+        obj    = func(x,'ObjGrad',[],[]);
+        if obj < obj0  + alpha*sigma*dg; break; end        
+        alpha  = beta*alpha;
+    end
+    
+    % Hard Thresholding Pursuit if the obj increases
+    fhtp    = 0;
+    if obj  > obj0 
+       x(T) = xtg(T); 
+       obj  = func(x,'ObjGrad',[],[]); 
+       fhtp = 1;
+    end
+    
+    % Stopping criteria
+    flag1   = (abs(obj-obj0)<1e-6*(1+abs(obj)) && fhtp); 
+    flag2   = (abs(obj-obj0)<1e-10*(1+abs(obj))&& Error(iter)<1e-2);
+    if  iter>10 &&  (flag1 || flag2)      
+        if obj > obj0
+           iter    = iter-1; 
+           x       = x0; 
+           T       = T0; 
+        end   
+        break;
+     end 
+ 
+    T0      = T; 
+    x0      = x; 
+    [obj,g] = func(x,'ObjGrad',[],[]);
+    
+    % Update tau
+    if  mod(iter,50)==0  
+        if Error(iter)>1/iter^2  
+        if iter<1500; eta = eta/1.05; 
+        else;         eta = eta/1.5; 
+        end     
+        else;         eta = eta*1.25;   
+        end
+    end     
+end
+
+
+x(abs(x)<1e-4)=0;
+[obj ,g]    = func(x,'ObjGrad',[],[]);
+% results output
+time        = toc(t0);
+Out.sparsity= nnz(x);
+Out.normgrad= sqrt(FNorm(g)); 
+Out.error   = sqrt(FNorm(g(T))+ FNorm(x(setdiff(I,T))));
+Out.time    = time;
+Out.iter    = iter;
+Out.grad    = g;
+Out.sol     = x;
+Out.obj     = obj; 
+Out.eta     = eta;
+
+if draw
+    figure
+    subplot(121) 
+    Obj(iter)= obj;  
+    PlotFun(Obj,iter,'r.-','f(x^k)'); 
+    subplot(122) 
+    PlotFun(Error,iter,'r.-','error') 
+end
+
+
+if display 
+   fprintf('------------------------------------------------\n');
+   if Out.normgrad<1e-5
+      fprintf(' A global optimal solution might be found\n');
+      fprintf(' because of ||gradient||=%5.2e!\n',Out.normgrad); 
+      if Out.iter>1500
+      fprintf('\n Since the number of iterations reaches to %d\n',Out.iter);
+      fprintf(' Try to rerun the solver with a smaller pars.eta=%5.2e\n',Out.eta); 
+      end
+      fprintf('------------------------------------------------\n');
+   end
+end
+
+
+end
+
+
+function [x0,obj,g,eta]=getparameters(n,s,x0,func,pars)
+
     if isfield(pars,'x0') && norm(x0)>0
        [obj0,g0] = func(zeros(n,1),'ObjGrad',[],[]);  
        [obj,g]   = func(pars.x0,'ObjGrad',[],[]); 
@@ -102,204 +299,8 @@ if nargin>=3
             eta  = (log2(1+ maxe))*exp((s/n)^(1/3));
             end     
         end
-    end      
-end
-     
-x       = x0;
-beta    = 0.5;
-sigma   = 5e-5;
-I       = 1:n;
-delta   = 1e-10;
-pcgtol  = tol*s;
-pcgs0   = 2000;
-T0      = zeros(s,1);
-Error   = zeros(1,itmax);
-Obj     = zeros(1,itmax);
-
-if display 
-fprintf(' Start to run the solver...\n'); 
-fprintf('\n Iter             Error                Ojective \n'); 
-fprintf('--------------------------------------------------------\n');
-end
-
-% Initial check for the starting point
-if FNorm(g)==0 && nnz(x)<=s
-fprintf('Starting point is a good stationary point, try another one...\n'); 
-Out.sol = x;
-Out.obj = obj;
-return;
-end
-
-if max(isnan(g))
-x0      = zeros(n,1);
-rind    = randi(n);
-x0(rind)= rand;
-[obj,g] = func(x0,'ObjGrad',[],[]);
-end
- 
-% The main body  
-for iter = 1:itmax
-     
-    xtg   = x0-eta*g;
-    [~,T] = maxk(abs(xtg),s); 
-    flag  = isempty(setdiff(T,T0));          
-    Tc    = setdiff(I,T);
+    end 
     
-    % Calculate the error for stopping criteria   
-    xtaus       = max(0,max(abs(g(Tc)))-min(abs(x(T)))/eta);
-    if flag
-    FxT         = sqrt(FNorm(g(T)));
-    Error(iter) = xtaus + FxT;
-    else
-    FxT         = sqrt(FNorm(g(T))+ FNorm(x(Tc)));
-    Error(iter) = xtaus + FxT;    
-    end
-     
-    if display 
-    fprintf('%4d             %5.2e              %5.2e\n',iter,Error(iter),obj); 
-    end
-             
-    % Stopping criteria
-    if Error(iter)<tol; break;  end
-    
-    
-    % update next iterate
-    if  iter   == 1 || flag           % update next iterate if T==supp(x^k)     
-        H      =  func(x0,'Hess',T,[]); 
-        if s   < pcgs0
-        d      = -H\g(T);
-        else
-        [d,~]  = pcg(H,-g(T),pcgtol,50); 
-        end
-        dg     =  sum(d.*g(T));
-        if dg  >  max(-delta*FNorm(d), -FNorm(g(T))) || isnan(dg) 
-        d      = -g(T); dg = sum(d.*d); 
-        end
-    else                              % update next iterate if T~=supp(x^k)
-        TTc    = intersect(T0,Tc); 
-        [H,D]  = func(x0,'Hess',T,TTc);
-        if s   < pcgs0
-        d      = H\( D*x0(TTc)- g(T));
-        else
-        [d,~]  = pcg(H,D*x0(TTc)- g(T), pcgtol,50); 
-        end
-        Fnz    = FNorm(x(TTc))/4/eta;
-        dgT    = sum(d.*g(T));
-        dg     = dgT-sum(x0(TTc).*g(TTc));
-        
-        delta0  = delta;
-        if Fnz > 1e-4; delta0 = 1e-4; end
- 
-        if dgT > max(-delta0*FNorm(d)+Fnz, -FNorm(g(T))) || isnan(dg) 
-        d      = -g(T); dg = sum(d.*d); 
-        end            
-    end
-    
-
-    alpha    = 1; 
-    x(Tc)    = 0;    
-    obj0     = obj;        
-    Obj(iter)= obj;
-    
-    % Amijio line search
-    for i      = 1:5
-        x(T)   = x0(T) + alpha*d;
-        obj    = func(x,'ObjGrad',[],[]);
-        if obj < obj0  + alpha*sigma*dg; break; end        
-        alpha  = beta*alpha;
-    end
-    
-    % Hard Thresholding Pursuit if the obj increases
-    if obj  > obj0 
-       x(T) = xtg(T); 
-       obj  = func(x,'ObjGrad',[],[]); 
-    end
-% 
-%     % Hard Thresholding Pursuit if the obj increases
-%     if obj/obj0 > 10
-%        count= count+1;
-%        z    = zeros(n,1);  
-%        if mod(count,5)==0; eta = max(0.05,eta*0.75); end
-%        z(T) = x0(T)-eta*g(T);
-%        objz = func(z,'ObjGrad',[],[]);  
-%        if     objz < obj0   
-%               x = z; obj  = objz;  
-%        elseif obj  > 10* obj0 
-%              if norm(x0)==0  
-%                  x(T) = 1;  
-%              else
-%                  x(T)= x0(T) + eta*d/(1+norm(d)); 
-%              end
-%               obj = func(x,'ObjGrad',[],[]); 
-%        end
-%     end
-    
-    % Stopping criteria
-    if  iter>10 && abs(obj - obj0)<1e-10*(1+abs(obj)) && Error(iter)<1e-2
-        if obj > obj0
-           iter    = iter-1; 
-           x       = x0; 
-           T       = T0; 
-        end   
-        break;
-     end 
- 
-    T0      = T; 
-    x0      = x; 
-    [obj,g] = func(x,'ObjGrad',[],[]);
-    
-    % Update tau
-    if  mod(iter,10)==0  
-        if Error(iter)>1/iter^2  
-        if iter<1500; eta = eta/1.05; 
-        else;         eta = eta/1.5; 
-        end     
-        else;         eta = eta*1.25;   
-        end
-    end     
 end
 
 
-x(abs(x)<1e-6)=0;
-[obj ,g]    = func(x,'ObjGrad',[],[]);
-% results output
-time        = toc(t0);
-Out.sparsity= nnz(x);
-Out.normgrad= sqrt(FNorm(g)); 
-Out.error   = sqrt(FNorm(g(T))+ FNorm(x(setdiff(I,T))));
-Out.time    = time;
-Out.iter    = iter;
-Out.grad    = g;
-Out.sol     = x;
-Out.obj     = obj; 
-Out.eta     = eta;
-
-if draw
-    figure
-    subplot(121) 
-    Obj(iter)= obj;  
-    PlotFun(Obj,iter,'r.-','f(x^k)'); 
-    subplot(122) 
-    PlotFun(Error,iter,'r.-','error') 
-end
-
-
-if display 
-   fprintf('\n--------------------------------------------------------\n');
-   if Out.normgrad<1e-5
-      fprintf(' A global optimal solution might be found\n');
-      fprintf(' because of ||gradient||=%5.2e!\n',Out.normgrad); 
-      if Out.iter>1500
-      fprintf('\n Since the number of iterations reaches to %d\n',Out.iter);
-      fprintf(' Try to rerun the solver with a smaller pars.eta=%5.2e\n',Out.eta); 
-      end
-      fprintf('--------------------------------------------------------\n');
-   end
-end
-
-
-end
-
-function Fnorm = FNorm(x)
-Fnorm = sum(x.*x);
-end
