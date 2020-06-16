@@ -26,5 +26,5 @@ func     = @(x,fgh,T1,T2)fname(x,fgh,T1,T2,data); clear data
 out      = NHTP(n,s,func); 
 
 fprintf('\n Sample size:   m=%4d,n=%4d\n', m,n);
-fprintf(' CPU time:     %6.3fsec\n',  out.time);
+fprintf(' CPU time:      %.3fsec\n',  out.time);
 fprintf(' Logistic Loss: %5.2e\n\n', out.obj);
