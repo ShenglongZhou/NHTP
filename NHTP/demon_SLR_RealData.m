@@ -11,7 +11,7 @@ data.At   = data.A';
 data.b    = label.b; 
 clear Mat label;
 
-s         = ceil(0.1*m);
+s         = ceil(0.2*m);
 pars.eta  = 5;
 fname     = str2func('logistic_regression');
 func      = @(x,fgh,T1,T2)fname(x,fgh,T1,T2,data); clear data
