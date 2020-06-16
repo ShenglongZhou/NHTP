@@ -12,7 +12,7 @@ function NX = normalization( X, normal_type)
 %       NX           --  normalized m x n order matrix
 % written by Shenglong Zhou, 13/10/2018
 
-t0   = tic;
+% t0   = tic;
 if normal_type==0                              % No normalization
     NX = X; 
     
@@ -50,7 +50,7 @@ else
     end
 end
 
-fprintf(' Nomorlization used %2.4f seconds.\n',toc(t0)); 
+% fprintf(' Nomorlization used %2.4f seconds.\n',toc(t0)); 
 
 end
 
