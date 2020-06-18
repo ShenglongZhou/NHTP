@@ -4,7 +4,7 @@ clc; clear; close all;
 n    = 10000;  
 m    = ceil(n/5); 
 s    = ceil(0.05*n);
-test = 1;
+test = 3;
 
 switch test
     case 1  % You could input any data including (data.A, data.At, data.b), e.g, 
@@ -36,6 +36,6 @@ fname    = str2func('logistic_regression');
 func     = @(x,fgh,T1,T2)fname(x,fgh,T1,T2,data); clear data
 out      = NHTP(n,s,func); 
 
-fprintf('\n Sample size:   m=%4d,n=%4d\n', m,n);
 fprintf(' CPU time:      %.3fsec\n',  out.time);
-fprintf(' Logistic Loss: %5.2e\n\n', out.obj);
+fprintf(' Logistic Loss: %5.2e\n', out.obj);
+fprintf(' Sample size:   %4dx%4d\n', m,n);
