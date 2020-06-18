@@ -14,7 +14,7 @@ func      = @(x,fgh,T1,T2)general_example(x,fgh,T1,T2,data);
 out1      = NHTP(n,s,func,pars)  
 
 % or you can solve by following way, 
-% where @exfunc can be found in the folder 'general_sco'
+% where @exfunc can be found in 'examples'-->'general_sco'
 pars.eta  = .1;
 out2      = NHTP(n,s,@exfunc,pars) 
 
