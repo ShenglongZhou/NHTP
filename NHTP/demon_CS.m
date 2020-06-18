@@ -1,4 +1,4 @@
-% demon compressed sensing problems with randomly generated and real data
+% demon compressed sensing problems 
 clc; clear; close all;
 
 n     = 10000;  
@@ -26,14 +26,15 @@ switch test
        pars.eta=1;
 end
  
-pars.Draw = 0;
-fname    = str2func('compressed_sensing');
-func     = @(x,fgh,T1,T2)fname(x,fgh,T1,T2,data); 
-out      = NHTP(n,s,func,pars);  
-fprintf('\n Sample size:       %dx%d\n', m,n);
-fprintf(' Recovery time:     %.3fsec\n',  out.time);
-fprintf(' Objective:         %5.2e\n',  out.obj);
+pars.draw = 1;
+fname     = str2func('compressed_sensing');
+func      = @(x,fgh,T1,T2)fname(x,fgh,T1,T2,data); 
+out       = NHTP(n,s,func,pars);  
+
+fprintf(' CPU time:          %.3fsec\n',  out.time);
 if exist('xopt')
-fprintf(' Recovery accuracy: %5.2e\n\n',...
+fprintf(' Accuracy:          %5.2e\n',...
           norm(out.sol-xopt)/norm(xopt));
 end
+fprintf(' Objective:         %5.2e\n',  out.obj);
+fprintf(' Sample size:       %dx%d\n', m,n);
