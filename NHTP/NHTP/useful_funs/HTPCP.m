@@ -21,11 +21,11 @@ function out = HTPCP(n, func, pars)
 %               pars.tol    --  Tolerance of stopping criteria. pars.maxit=1e-5 (default) 
 %
 % Outputs:
-%     Out.x:             The sparse solution x 
-%     Out.Fx:            F(x)
-%     Out.xFx:           x'*F(x)
-%     Out.time           CPU time
-%     Out.iter:          Number of iterations
+%     out.x:             The sparse solution x 
+%     out.Fx:            F(x)
+%     out.xFx:           x'*F(x)
+%     out.time           CPU time
+%     out.iter:          Number of iterations
 %
 %  This solver was created based on the algorithm proposed by  
 %  Shang, M.,Zhang, C.,Peng, D.,& Zhou, S., A half thresholding projection 
@@ -63,7 +63,7 @@ for iter = 1: maxit
     
     if iter>1
        err = zxk /max(1,norm(x(T)));
-       if mod(iter,5)==0 && iteron
+       if mod(iter,50)==0 && iteron
        fprintf('%4d         %5.2e       %5.2fsec\n',iter,err,toc(t0)); 
        end
        if err<tol; break; end
@@ -73,27 +73,56 @@ for iter = 1: maxit
     if mod(iter,10)==0
        lambda = max(1e-10,tau^(iter/100)*lambda); 
     end
-     x0     = x;
-     x      = zeros(n,1);
-     T      = find( z > 54^(1/3)/4*lambda^t );
-     x(T)   = t*z(T).*( 1+cos( t*pi-t*acos( lambda./( abs(z(T))/3 ).^t/8 ) ) );
-     %--------------------------- z_k iteration---------------------------%
-     alpha = 1;
-     f1    = norm(x-x0)^2 + zxk^2;
-     f2    = norm(x-z)^2;
-     Fx    = func(x,T);                  
-     for j = 1:5
-     z     = max(0,x-alpha*Fx);
-     if norm(x-z)^2 + alpha*f1 < f2; break; end
-     alpha = alpha/2;     
-     end
+    x0     = x;
+    x      = zeros(n,1);
+    T      = find( z > 54^(1/3)/4*lambda^t );
+    x(T)   = t*z(T).*( 1+cos( t*pi-t*acos( lambda./( abs(z(T))/3 ).^t/8 ) ) );
+    
+    %--------------------------- z_k iteration---------------------------%
+    alpha = 1;
+    f1    = norm(x-x0)^2 + zxk^2;
+    f2    = norm(x-z)^2;
+    Fx    = func(x,T);                  
+    for j = 1:5
+    z     = max(0,x-alpha*Fx);
+    if norm(x-z)^2 + alpha*f1 < f2; break; end
+    alpha = alpha/2;     
+    end
 
 end
 
 fprintf('------------------------------------\n');
+x        = sparse(x,n);
 out.x    = x;
 out.Fx   = Fx;
 out.xFx  = sum(x(T).*Fx(T));
 out.iter = iter;
 out.time = toc(t0);
+out.sparsity = nnz(x);
+end
+
+% get the sparse approximation of x----------------------------------------
+function sx = sparse(x,n)
+x(x<0)  = 0;
+T       = find(x);
+[sx,id] = sort(x(T),'descend'); 
+y       = 0;
+nx      = sum(x(T));
+nT      = nnz(T);
+t       = zeros(nT-1,1);
+for i   = 1:nT
+    if y > 0.9995*nx; break; end
+    y    = y + sx(i); 
+    if i < nT
+    t(i) = sx(i)/sx(i+1);
+    end
+end
+if  i  < nT
+    j  = find(t==max(t)); 
+    i  = j(1);
+else
+    i  = nT;
+end
+sx = zeros(n,1);
+sx(T(id(1:i))) = x(T(id(1:i)));
 end
