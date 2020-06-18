@@ -1,11 +1,11 @@
 clc; clear; close all;
 
 ExNam   = 1; %= 1, 2, 3, 4 or 5                          
-ExMat   = 2; %= 1 or 2
+ExMat   = 1; %= 1 or 2
 
 n       = 10000;  
 m       = ceil(0.25*n); 
-s       = ceil(0.05*n);
+s       = ceil(0.01*n);
  
 switch ExNam
     
@@ -38,7 +38,9 @@ end
 pars.draw = 1;
 fun       = str2func(funcname);
 func      = @(x,fgh,T1,T2)fun(x,fgh,T1,T2,data);
-out       = NHTP(n,s,func,pars) 
+out       = NHTP(n,s,func,pars); 
 
-
+fprintf(' CPU time:          %.3fsec\n',  out.time);
+fprintf(' Objective:         %5.2e\n',  out.obj);
+fprintf(' Variable size:     n=%d\n', n);
  
