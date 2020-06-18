@@ -1,4 +1,4 @@
-% This code presents the success recovery rate of NHTP
+% This code demonstrates the success recovery rate of NHTP
 clc; clear; close all; 
 
 test    = 1; %=1 succ rate v.s. s; =2 succ rate v.s. m/n
