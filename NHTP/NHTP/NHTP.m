@@ -14,10 +14,12 @@ function Out = NHTP(n, s, func, pars)
 %     pars:     Parameters are all OPTIONAL
 %               pars.x0      --  Starting point of x,   pars.x0=zeros(n,1) (default)
 %               pars.eta     --  A positive parameter,  a default one is given related to inputs  
-%               pars.display --  Display results for each iteration if pars.display=1 (default)
-%                                Don't display results for  each iteration if pars.display=1
+%               pars.display --  =1. Display results for each iteration.(default)
+%                                =0. Don't display results for each iteration.
 %               pars.draw    --  A  graph will be drawn if pars.draw=1 (default) 
-%                                No graph will be drawn if pars.draw=0 
+%                                No graph will be drawn if pars.draw=0
+%               pars.maxit   --  Maximum number of iterations, (default,2000) 
+%               pars.tol     --  Tolerance of the halting condition, (default,1e-6)
 %
 % Outputs:
 %     Out.sol:           The sparse solution x
