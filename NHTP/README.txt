@@ -2,7 +2,7 @@ To implement this solver, please
 
 [1] run startup.m first to add the path;
 
-[2] run xxxx.m to solve  different problems
+[2] run demonXXXX.m to solve different problems
 
 This source code contains the algorithm described in:
 
