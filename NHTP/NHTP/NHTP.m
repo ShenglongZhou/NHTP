@@ -30,14 +30,13 @@ function Out = NHTP(n, s, func, pars)
 %     Out.iter:          Number of iterations
 %     Out.grad:          Gradient at Out.sol
 %     Out.obj:           Objective function value at Out.sol 
-%     Out.eta:           Final eta
 %
-%
-%%%%%%%    Send your comments and suggestions to                     %%%%%%
-%
-%%%%%%%    shenglong.zhou@soton.ac.uk                                %%%%%%
-% 
-%%%%%%%    Warning: Accuracy may not be guaranteed!!!!!              %%%%%%
+% This code is programmed based on the algorithm proposed in 
+% "S. Zhou, N. Xiu and H. Qi, Global and Quadratic Convergence of Newton 
+% Hard-Thresholding Pursuit, Journal of Machine Learning Research, 2019."
+% Send your comments and suggestions to <<< shenglong.zhou@soton.ac.uk >>> 
+% Warning: Accuracy may not be guaranteed !!!!! 
+
 warning off;
 t0     = tic;
 
@@ -219,7 +218,6 @@ Out.iter    = iter;
 Out.grad    = g;
 Out.sol     = x;
 Out.obj     = obj; 
-Out.eta     = eta;
 
 if draw
     figure
