@@ -194,7 +194,7 @@ for iter = 1:itmax
     x0      = x; 
     [obj,g] = func(x,'ObjGrad',[],[]);
     
-    % Update tau
+    % Update eta
     if  mod(iter,50)==0  
         if Error(iter)>1/iter^2  
         if iter<1500; eta = eta/1.05; 
