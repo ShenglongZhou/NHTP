@@ -1,4 +1,4 @@
-% This code demonstrates the success recovery rate in compressed sensing of NHTP
+% This code demonstrates the success recovery rate in compressed sensing
 clc; clear; close all; 
 
 test    = 1; %=1 succ rate v.s. s; =2 succ rate v.s. m/n
