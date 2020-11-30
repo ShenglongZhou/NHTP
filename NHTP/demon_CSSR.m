@@ -33,7 +33,7 @@ for j        = 1:length(sm)
     clc; SucRate  = [SucRate rate]  
     
     figure(1)
-    set(gcf, 'renderer', 'painters', 'Position', [1000, 200, 400 350]);
+    set(gcf, 'Position', [1000, 200, 400 350]);
     xlab = {'s','m/n'};
     plot(sm(1:j),SucRate/noS,'r*-','LineWidth',1), 
     xlabel(xlab{test}), ylabel('Success Rate') 
