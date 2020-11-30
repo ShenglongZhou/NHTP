@@ -11,7 +11,6 @@ switch test
        ExMat   = 1;
        MatType = {'GaussianMat','PartialDCTMat'}; 
        data    = compressed_sensing_data(MatType{ExMat},m,n,s,0);
-       xopt    = data.x_opt;
   case 2       % Input real data
        load 'DrivFace.mat'; load 'nlab.mat'; %'identity.mat';
        [m,n]   = size(A);
@@ -32,9 +31,9 @@ func      = @(x,fgh,T1,T2)fname(x,fgh,T1,T2,data);
 out       = NHTP(n,s,func,pars);  
 
 fprintf(' CPU time:          %.3fsec\n',  out.time);
-if exist('xopt')
+if isfield(data,'xopt')
 fprintf(' Accuracy:          %5.2e\n',...
-          norm(out.sol-xopt)/norm(xopt));
+          norm(out.sol-data.xopt)/norm(data.xopt));
 end
 fprintf(' Objective:         %5.2e\n',  out.obj);
 fprintf(' Sample size:       %dx%d\n', m,n);
