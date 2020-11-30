@@ -25,7 +25,7 @@ switch test
        pars.eta=1;
 end
  
-pars.draw = 1;
+pars.draw = 0;
 fname     = str2func('compressed_sensing');
 func      = @(x,fgh,T1,T2)fname(x,fgh,T1,T2,data); 
 out       = NHTP(n,s,func,pars);  
