@@ -10,9 +10,9 @@ function data = compressed_sensing_data(problemname,m,n,s,nf )
 %       data.A           --  m x n order measurement matrices,  (required)
 %       data.At          --  the transpose of data.A, i.e., data.At=data.A', (required)
 %       data.b           --  m x 1 order observation vector, (required)
-%       data.x_opt       --  n x 1 order 'true' sparse solution, (optional) 
+%       data.xopt        --  n x 1 order 'true' sparse solution, (optional) 
 %
-% which satisfies       b = A*x_opt + nf*noise 
+% which satisfies       b = A*xopt + nf*noise 
 
 % written by Shenglong Zhou, 13/10/2018
 
@@ -52,18 +52,17 @@ switch problemname
         disp('input a problen name');        
 end
 
-x_opt     = zeros(n,1);  
-while nnz(x_opt)~=s  
-x_opt(I)  = randn(s,1); 
+xopt     = zeros(n,1);
+while nnz(xopt)~= s  
+      xopt(I)   = randn(s,1); 
 end
- 
+xopt(I)    = xopt(I) + 0.1*sign(xopt(I));
 data.A     = normalization(A, 3);                   % required
-data.b     = data.A(:,I)*x_opt(I)+nf*randn(m,1);    % required
+data.b     = data.A(:,I)*xopt(I)+nf*randn(m,1);     % required
 data.At    = data.A';                               % required
 
-data.x_opt = x_opt;                                 % optional
-clear A x_opt I0 I
+data.xopt  = xopt;                                 % optional
+clear A xopt I0 I
 fprintf(' Data generation used %2.4f seconds.\n\n',toc(start)); 
 
 end
-
