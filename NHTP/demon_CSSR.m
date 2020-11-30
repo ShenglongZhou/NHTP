@@ -7,7 +7,7 @@ ExMat   = 1; %=1 Gaussian matrix;  =2 Partial DCT matrix
 n       = 256; 
 m       = ceil(0.25*n);
 s       = ceil(0.05*n);
-noS     = 100;
+noS     = 200;
 MatType = {'GaussianMat','PartialDCTMat'};
 switch  test
 case 1; sm = ceil(linspace(6,36,15));
@@ -30,11 +30,16 @@ for j        = 1:length(sm)
         out  = NHTP(n,s,func,pars); clc; SucRate     
         rate = rate + (norm(out.sol-data.xopt)/norm(data.xopt)<1e-2); 
     end
-    clc; SucRate  = [SucRate rate]    
+    clc; SucRate  = [SucRate rate]  
+    
+    figure(1)
+    set(gcf, 'renderer', 'painters', 'Position', [1000, 200, 400 350]);
+    xlab = {'s','m/n'};
+    plot(sm(1:j),SucRate/noS,'r*-','LineWidth',1), 
+    xlabel(xlab{test}), ylabel('Success Rate') 
+    axis([min(sm) max(sm) 0 1]); grid on; 
+    legend('NHTP','Location','NorthEast'); hold on, pause(0.1)
+    
 end
 
-xlab = {'s','m/n'};
-figure(1), plot(sm,SucRate/noS,'r*-'), 
-xlabel(xlab{test}), ylabel('Success Rate') 
-axis([min(sm) max(sm) 0 1]); grid on;
-legend('NHTP','Location','NorthEast'); hold on 
+
