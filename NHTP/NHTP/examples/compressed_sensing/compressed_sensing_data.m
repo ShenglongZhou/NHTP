@@ -4,7 +4,7 @@ function data = compressed_sensing_data(problemname,m,n,s,nf )
 % Inputs:
 %       problemname -- can be 'Gaussian','PartialDCTMat' or 'ToeplitzCorMat'
 %       m and n     -- dimensions of A
-%       s           -- sparsity level of x_opt, an intger between 1 and n-1
+%       s           -- sparsity level of xopt, an intger between 1 and n-1
 %       nf          -- noise ratio
 % Outputs:
 %       data.A           --  m x n order measurement matrices,  (required)
