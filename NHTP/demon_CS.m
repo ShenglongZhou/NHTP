@@ -22,7 +22,7 @@ switch test
        data.A  = randn(m,n)/sqrt(m);
        data.At = data.A';
        data.b  = randn(m,1)/sqrt(m);  
-       pars.eta=1;
+       pars.eta= 1;
 end
  
 pars.draw = 0;
