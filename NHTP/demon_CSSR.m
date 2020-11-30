@@ -38,5 +38,3 @@ figure(1), plot(sm,SucRate/noS,'r*-'),
 xlabel(xlab{test}), ylabel('Success Rate') 
 axis([min(sm) max(sm) 0 1]); grid on;
 legend('NHTP','Location','NorthEast'); hold on 
-saveas(figure(1), 'outputs\SuccessRate.eps','epsc');
-saveas(figure(1), 'outputs\SuccessRate.fig');
