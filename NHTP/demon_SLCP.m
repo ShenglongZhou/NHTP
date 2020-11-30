@@ -21,11 +21,9 @@ end
 func     = @(x,fgh,T1,T2)slcp(x,fgh,T1,T2,data);
 out      = NHTP(n,s,func,pars);  
 
- 
 fprintf(' CPU time:          %.3fsec\n',  out.time);
-if isfield(data,'xopt')
-fprintf(' Accuracy:          %5.2e\n',...
-          norm(out.sol-data.xopt)/norm(data.xopt));
-end
 fprintf(' Objective:         %5.2e\n',  out.obj);
 fprintf(' Sample size:       %dx%d\n', n,n);
+if isfield(data,'xopt') && s<=100
+   ReoveryShow(data.xopt,out.sol,[1000, 550, 400 200],1),pause(0.05)
+end
