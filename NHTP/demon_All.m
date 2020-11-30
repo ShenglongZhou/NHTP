@@ -43,4 +43,7 @@ out       = NHTP(n,s,func,pars);
 fprintf(' CPU time:          %.3fsec\n',  out.time);
 fprintf(' Objective:         %5.2e\n',  out.obj);
 fprintf(' Variable size:     n=%d\n', n);
- 
+if isfield(data,'xopt')
+fprintf(' Accuracy:          %5.2e\n',...
+          norm(out.sol-data.xopt)/norm(data.xopt));
+end 
