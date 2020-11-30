@@ -18,6 +18,7 @@ if  exist('out0')
 else
     pars.x0 = zeros(n,1);
 end
+pars.draw= 0;
 func     = @(x,fgh,T1,T2)slcp(x,fgh,T1,T2,data);
 out      = NHTP(n,s,func,pars);  
 
