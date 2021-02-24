@@ -6,7 +6,6 @@ To implement this solver, please
 
 This source code contains the algorithm described in:
 
-[1] S.L. Zhou, N.H. Xiu and H.-D. Qi (2019),
-"Global and Quadratic Convergence of Newton Hard-Thresholding Pursuit".
+[1] S. Zhou, N. Xiu and H. Qi, Global and Quadratic Convergence of Newton Hard-Thresholding Pursuit, *Journal of Machine Learning Research*, 22(12):1−45, 2021
 
 Please give credits to this paper if you use the code for your research.
