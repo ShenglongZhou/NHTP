@@ -19,10 +19,7 @@ switch test
 end
  
 pars.draw = 0;
-fname     = str2func('compressed_sensing');
-func      = @(x,fgh,T1,T2)fname(x,fgh,T1,T2,data); 
-out       = NHTP(n,s,func,pars);  
-
+out       = NHTP('CS',data,n,s,pars);  
 fprintf(' CPU time:          %.3fsec\n',  out.time);
 fprintf(' Objective:         %5.2e\n',  out.obj);
 fprintf(' Sample size:       %dx%d\n', m,n);
