@@ -3,13 +3,12 @@ function data = lcp_data(example,n,s )
 % and Toeplitz Correlation type measurement matrices.
 % Inputs:
 %       example     -- can be 'z-mat','sdp' or 'sdp-non'
-%       n           -- dimension  of M\in \R^{n x n}
+%       n           -- dimension  of A\in \R^{n x n}
 %       s           -- sparsity level of xopt, an intger between 1 and n-1
 % Outputs:
-%       data.M      --  n x n order measurement matrices,  (required)
-%       data.Mt     --  the transpose of data.M, i.e., data.Mt=data.M', (required)
-%       data.q      --  n x 1 order observation vector, (required)
-%       data.n      -- dimension  of M\in \R^{n x n}
+%       data.A      --  n x n order measurement matrices,  (required)
+%       data.At     --  the transpose of data.A, i.e., data.At=data.A', (required)
+%       data.b      --  n x 1 order observation vector, (required)
 %       data.xopt   --  n x 1 order 'true' sparse solution, (optional) 
 %
 % which satisfies       b = A*x_opt + nf*noise 
@@ -46,9 +45,9 @@ switch example
          M=M/n;  Mt=Mt/n; q=q/n;      
 end
     
-data.M    = M;
-data.Mt   = Mt;
-data.q    = q;
+data.A    = M;
+data.At   = Mt;
+data.b    = q;
 data.n    = n;
 data.xopt = xopt;
 clear M Mt xopt Mx q Z
