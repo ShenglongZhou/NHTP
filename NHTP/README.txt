@@ -100,6 +100,5 @@ data.b    = zeros(m,1);
 for i     = 1:m    
 data.b(i) = randsrc(1,1,[0 1; 1-q(i) q(i)]);
 end               
-
 pars.eta  = 0.5;
 out       = NHTP('LR',data,n,s,pars);
