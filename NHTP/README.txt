@@ -26,7 +26,7 @@ Please give credits to this paper if you use the code for your research.
 %               = 'LCP', linear complementarity problems
 %               = 'LR',  sparse logistic regression problems
 %               = 'SCO', other sparsity constrained optimization problems
-%     data    : A triple structure, (required)
+%     data    : A triple structure (data.A, data.At, data.b) (required)
 %               data.A, the measurement matrix, or a function handle @(x)A(x);
 %               data.At = data.A',or a function handle @(x)At(x);
 %               data.b, the observation vector 
