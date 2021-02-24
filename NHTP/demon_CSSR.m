@@ -26,8 +26,7 @@ for j        = 1:length(sm)
     end    
     for S = 1:noS         
         data = compressed_sensing_data(MatType{ExMat},m,n,s,0 );       
-        func = @(x,fgh,T1,T2)compressed_sensing(x,fgh,T1,T2,data);
-        out  = NHTP(n,s,func,pars); clc; SucRate     
+        out  = NHTP('CS',data,n,s,pars); clc; SucRate     
         rate = rate + (norm(out.sol-data.xopt)/norm(data.xopt)<1e-2); 
     end
     clc; SucRate  = [SucRate rate]  
