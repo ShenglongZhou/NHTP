@@ -1,4 +1,4 @@
-function [out1,out2] = general_example(x,fgh,T1,T2,data)
+function [out1,out2] = sco(x,fgh,T1,T2,data)
     switch fgh
     case 'ObjGrad'             
         out1 = data(x,'obj');  % objective function   
