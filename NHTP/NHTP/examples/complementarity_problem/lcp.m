@@ -1,14 +1,14 @@
-function [out1,out2] = slcp(x,fgh,T1,T2,data)
+function [out1,out2] = lcp(x,fgh,T1,T2,data)
     
     if isfield(data,'r') 
     r   = data.r ;
     else
     r   = 2;
     end
-    n   = data.n;
-    M   = data.M;
-    Mt  = data.Mt;
-    q   = data.q;     
+    M   = data.A;
+    Mt  = data.At;
+    q   = data.b; 
+    n   = length(q);   
     clear data; 
     
     eps =  0;
