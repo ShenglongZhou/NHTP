@@ -11,18 +11,11 @@ switch test
        ExMat   = 1;
        MatType = {'GaussianMat','PartialDCTMat'}; 
        data    = compressed_sensing_data(MatType{ExMat},m,n,s,0);
-  case 2       % Input real data
-       load 'DrivFace.mat'; load 'nlab.mat'; %'identity.mat';
-       [m,n]   = size(A);
-       s       = ceil(0.2*min(m,n));
-       data.A  = A/sqrt(m); clear A
-       data.At = data.A';
-       data.b  = y/sqrt(m); clear y  
-  case 3       % Input any data including (data.A, data.At, data.b), e.g.,
+  case 2       % Input any data including (data.A, data.At, data.b), e.g.,
        data.A  = randn(m,n)/sqrt(m);
        data.At = data.A';
        data.b  = randn(m,1)/sqrt(m);  
-       pars.eta= 1;
+       pars.eta= 0.5;
 end
  
 pars.draw = 0;
