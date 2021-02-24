@@ -1,4 +1,4 @@
-function Out = NHTP(n, s, func, pars)
+function Out = NHTP(problem,data,n,s,pars)
 
 % This code aims at solving the sparsity constrained optimization with form
 %
@@ -7,6 +7,15 @@ function Out = NHTP(n, s, func, pars)
 % where s is the given sparsity, which is << n.  
 %
 % Inputs:
+%     problem:  A text string for different problems to be solved, (required)
+%               = 'CS',  compressed sensing problems
+%               = 'LCP', linear complementarity problems
+%               = 'LR',  sparse logistic regression problems
+%               = 'SCO', other sparsity constrained optimization problems
+%     data    : A triple structure, (required)
+%               data.A, the measurement matrix, or a function handle @(x)A(x);
+%               data.At = data.A',or a function handle @(x)At(x);
+%               data.b, the observation vector 
 %     n       : Dimension of the solution x, (required)
 %     s       : Sparsity level of x, an integer between 1 and n-1, (required)
 %     func    : function handle, define the function value, gradient, Hessian of f(x)
@@ -28,7 +37,6 @@ function Out = NHTP(n, s, func, pars)
 %     Out.error:         Error used to terminate this solver 
 %     Out.time           CPU time
 %     Out.iter:          Number of iterations
-%     Out.grad:          Gradient at Out.sol
 %     Out.obj:           Objective function value at Out.sol 
 %
 % This code is programmed based on the algorithm proposed in 
@@ -39,13 +47,20 @@ function Out = NHTP(n, s, func, pars)
 
 warning off;
 t0     = tic;
-
-if     nargin<3
+if     nargin<4
        disp(' No enough inputs. No problems will be solverd!'); return;
 end
 
-if nargin>=3
-    if nargin<4; pars=[]; end
+switch problem
+    case 'CS' ;  fun  = @compressed_sensing;
+    case 'LCP';  fun  = @lcp;
+    case 'LR' ;  fun  = @logistic_regression; 
+    case 'SCO';  fun  = @sco; 
+end
+func = @(x,key,T1,T2)fun(x,key,T1,T2,data); 
+
+if nargin >= 4
+    if nargin < 5;             pars    = [];                                end
     if isfield(pars,'display');display = pars.display;else; display = 1;    end
     if isfield(pars,'draw');   draw    = pars.draw;   else; draw    = 1;    end
     if isfield(pars,'maxit');  itmax   = pars.maxit;  else; itmax   = 2000; end
@@ -215,7 +230,6 @@ Out.normgrad= sqrt(FNorm(g));
 Out.error   = sqrt(FNorm(g(T))+ FNorm(x(setdiff(I,T))));
 Out.time    = time;
 Out.iter    = iter;
-Out.grad    = g;
 Out.sol     = x;
 Out.obj     = obj; 
 
