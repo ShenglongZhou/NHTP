@@ -51,6 +51,8 @@ Please give credits to this paper if you use the code for your research.
 %     Out.iter:          Number of iterations
 %     Out.obj:           Objective function value at Out.sol 
 
+
+% Here are some examples that you can run
 % =================================================================
 % Example I:  compressed sensing problem
 
