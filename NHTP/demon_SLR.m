@@ -12,7 +12,7 @@ switch test
          s       = ceil(0.05*n);
          data    = logistic_random_data(MatType{ExMat},m,n,s,0.5); 
     case 2  % Or you could input real data including (data.A, data.At, data.b), e.g,
-         prob      = 'newsgroup';%'colon-cancer'; 
+         prob      = 'colon-cancer'; 
          Mat       = load(strcat(prob,'.mat')); 
          label     = load(strcat(prob,'_label.mat'));   
          label.b(label.b==-1)= 0;
@@ -25,6 +25,6 @@ switch test
 end
 
 out = NHTP('LR',data,n,s);
-fprintf(' CPU time:      %.3fsec\n',  out.time);
-fprintf(' Logistic Loss: %5.2e\n', out.obj);
-fprintf(' Sample size:   %4dx%4d\n', m,n);
+fprintf(' CPU time:       %.3fsec\n',  out.time);
+fprintf(' Logistic Loss:  %5.2e\n', out.obj);
+fprintf(' Sample size:    %dx%d\n', m,n);
