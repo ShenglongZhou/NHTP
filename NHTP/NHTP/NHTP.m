@@ -80,9 +80,10 @@ Obj     = zeros(1,itmax);
 FNorm   = @(x)norm(x)^2;
 
 if display 
-fprintf(' Start to run the solver...\n'); 
-fprintf('\n Iter             Error                Ojective \n'); 
-fprintf('------------------------------------------------\n');
+fprintf(' Start to run the solver -- NHTP \n');
+fprintf(' ------------------------------------------------\n');
+fprintf('\n Iter       Error         Ojective         Time \n'); 
+fprintf(' ------------------------------------------------\n');
 end
 
 % Initial check for the starting point
@@ -119,7 +120,7 @@ for iter = 1:itmax
     end
      
     if display 
-    fprintf('%4d             %5.2e              %5.2e\n',iter,Error(iter),obj); 
+    fprintf('%4d       %5.2e       %5.2e      %6.3fsec\n',iter,Error(iter),obj,toc(t0)); 
     end
              
     % Stopping criteria
@@ -242,15 +243,15 @@ end
 
 
 if display 
-   fprintf('------------------------------------------------\n');
+   fprintf(' ------------------------------------------------\n');
    if Out.normgrad<1e-5
       fprintf(' A global optimal solution might be found\n');
-      fprintf(' because of ||gradient||=%5.2e!\n',Out.normgrad); 
+      fprintf(' because of ||gradient|| = %5.2e!\n',Out.normgrad); 
       if Out.iter>1500
       fprintf('\n Since the number of iterations reaches to %d\n',Out.iter);
-      fprintf(' Try to rerun the solver with a smaller pars.eta=%5.2e\n',Out.eta); 
+      fprintf(' Try to rerun the solver with a smaller pars.eta = %5.2e\n',Out.eta); 
       end
-      fprintf('------------------------------------------------\n');
+      fprintf(' ------------------------------------------------\n');
    end
 end
 
