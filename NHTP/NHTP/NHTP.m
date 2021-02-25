@@ -23,8 +23,8 @@ function Out = NHTP(problem,data,n,s,pars)
 %               pars.eta     --  A positive parameter,  a default one is given related to inputs  
 %               pars.display --  =1. Display results for each iteration.(default)
 %                                =0. Don't display results for each iteration.
-%               pars.draw    --  A  graph will be drawn if pars.draw=1 (default) 
-%                                No graph will be drawn if pars.draw=0
+%               pars.draw    --  A  graph will be drawn if pars.draw=1 
+%                                No graph will be drawn if pars.draw=0 (default) 
 %               pars.maxit   --  Maximum number of iterations, (default,2000) 
 %               pars.tol     --  Tolerance of the halting condition, (default,1e-6)
 %
@@ -60,7 +60,7 @@ func = @(x,key,T1,T2)fun(x,key,T1,T2,data);
 if nargin >= 4
     if nargin < 5;             pars    = [];                                end
     if isfield(pars,'display');display = pars.display;else; display = 1;    end
-    if isfield(pars,'draw');   draw    = pars.draw;   else; draw    = 1;    end
+    if isfield(pars,'draw');   draw    = pars.draw;   else; draw    = 0;    end
     if isfield(pars,'maxit');  itmax   = pars.maxit;  else; itmax   = 2000; end
     if isfield(pars,'tol');    tol     = pars.tol;    else; tol     = 1e-6; end  
     if isfield(pars,'x0');     x0      = pars.x0;     else; x0 = zeros(n,1);end 
@@ -231,7 +231,7 @@ Out.iter    = iter;
 Out.sol     = x;
 Out.obj     = obj; 
 
-if draw
+if  draw
     figure
     subplot(121) 
     Obj(iter)= obj;  
