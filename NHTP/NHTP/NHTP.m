@@ -17,9 +17,7 @@ function Out = NHTP(problem,data,n,s,pars)
 %               data.At = data.A',or a function handle @(x)At(x);
 %               data.b, the observation vector 
 %     n       : Dimension of the solution x, (required)
-%     s       : Sparsity level of x, an integer between 1 and n-1, (required)
-%     func    : function handle, define the function value, gradient, Hessian of f(x)
-%               it has the form: [out1,out2] = func(x,flag,T1,T2)               
+%     s       : Sparsity level of x, an integer between 1 and n-1, (required)           
 %     pars:     Parameters are all OPTIONAL
 %               pars.x0      --  Starting point of x,   pars.x0=zeros(n,1) (default)
 %               pars.eta     --  A positive parameter,  a default one is given related to inputs  
