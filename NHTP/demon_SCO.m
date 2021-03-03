@@ -1,6 +1,5 @@
-function demon_sco()
 % demon a general sparsity constrained problem
-
+function demon_sco()
 clc; clear; close all;
 pars.eta  = 0.1;
 n         = 2;
@@ -8,7 +7,7 @@ s         = 1;
 data      = @(x,fgh)simple_sco(x,fgh);  
 out       = NHTP('SCO',data,n,s,pars);
 
-%-----------------------------------------------------
+%---------------------------------------------------------
 function data = simple_sco(x,fgH)
     % This code provides information for
     %     min   x'*[6 5;5 8]*x+[1 9]*x-sqrt(x'*x+1) 
