@@ -55,7 +55,7 @@ switch problem
     case 'LR' ;  fun  = @logistic_regression; 
     case 'SCO';  fun  = @sco; 
 end
-data.n = n;
+if isstruct(data);  data.n = n; end
 func   = @(x,key,T1,T2)fun(x,key,T1,T2,data); 
 
 if nargin >= 4
