@@ -44,10 +44,16 @@ function Out = NHTP(problem,data,n,s,pars)
 % Warning: Accuracy may not be guaranteed !!!!! 
 
 warning off;
-t0     = tic;
-if     nargin<4
-       disp(' No enough inputs. No problems will be solverd!'); return;
+t0  = tic;
+if  nargin<4
+    disp(' No enough inputs. No problems will be solverd!'); return;
 end
+if nargin < 5; pars = struct([]);  end 
+if isfield(pars,'display');display = pars.display;else; display = 1;    end
+if isfield(pars,'draw');   draw    = pars.draw;   else; draw    = 0;    end
+if isfield(pars,'maxit');  itmax   = pars.maxit;  else; itmax   = 2000; end
+if isfield(pars,'tol');    tol     = pars.tol;    else; tol     = 1e-6; end  
+if isfield(pars,'x0');     x0      = pars.x0;     else; x0 = zeros(n,1);end 
 
 switch problem
     case 'CS' ;  fun  = @compressed_sensing;
@@ -56,19 +62,8 @@ switch problem
     case 'SCO';  fun  = @sco; 
 end
 if isstruct(data);  data.n = n; end
-func   = @(x,key,T1,T2)fun(x,key,T1,T2,data); 
-
-if nargin >= 4
-    if nargin < 5;             pars    = [];                                end
-    if isfield(pars,'display');display = pars.display;else; display = 1;    end
-    if isfield(pars,'draw');   draw    = pars.draw;   else; draw    = 0;    end
-    if isfield(pars,'maxit');  itmax   = pars.maxit;  else; itmax   = 2000; end
-    if isfield(pars,'tol');    tol     = pars.tol;    else; tol     = 1e-6; end  
-    if isfield(pars,'x0');     x0      = pars.x0;     else; x0 = zeros(n,1);end 
-    
-   [x0,obj,g,eta] = getparameters(n,s,x0,func,pars);     
-end
-   
+func    = @(x,key,T1,T2)fun(x,key,T1,T2,data); 
+[x0,obj,g,eta] = getparameters(n,s,x0,func,pars);  
 x       = x0;
 beta    = 0.5;
 sigma   = 5e-5;
@@ -80,26 +75,27 @@ Error   = zeros(1,itmax);
 Obj     = zeros(1,itmax);
 FNorm   = @(x)norm(x)^2;
 
-if display 
-fprintf(' Start to run the solver -- NHTP \n');
-fprintf(' ------------------------------------------------\n');
-fprintf('\n Iter       Error         Ojective         Time \n'); 
-fprintf(' ------------------------------------------------\n');
+if  display 
+    fprintf(' Start to run the solver -- NHTP \n');
+    fprintf(' ------------------------------------------------\n');
+    fprintf(' Iter       Error         Ojective         Time \n'); 
+    fprintf(' ------------------------------------------------\n');
 end
 
 % Initial check for the starting point
-if FNorm(g)==0 && nnz(x)<=s
-fprintf('Starting point is a good stationary point, try another one...\n'); 
-Out.sol = x;
-Out.obj = obj;
-return;
+if  FNorm(g)<1e-20 && nnz(x)<=s
+    fprintf(' Starting point is a good solution. Stop NHTP\n'); 
+    Out.sol  = x;
+    Out.obj  = obj;
+    Out.time = toc(t0);
+    return;
 end
 
-if max(isnan(g))
-x0      = zeros(n,1);
-rind    = randi(n);
-x0(rind)= rand;
-[obj,g] = func(x0,'ObjGrad',[],[]);
+if  max(isnan(g))
+    x0      = zeros(n,1);
+    rind    = randi(n);
+    x0(rind)= rand;
+    [obj,g] = func(x0,'ObjGrad',[],[]);
 end
  
 % The main body  
