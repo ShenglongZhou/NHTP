@@ -55,7 +55,8 @@ switch problem
     case 'LR' ;  fun  = @logistic_regression; 
     case 'SCO';  fun  = @sco; 
 end
-func = @(x,key,T1,T2)fun(x,key,T1,T2,data); 
+data.n = n;
+func   = @(x,key,T1,T2)fun(x,key,T1,T2,data); 
 
 if nargin >= 4
     if nargin < 5;             pars    = [];                                end
