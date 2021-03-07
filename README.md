@@ -1,6 +1,4 @@
-# NHTPver2
-
-This is the updated verion of [NHPT](https://github.com/ShenglongZhou/NHTP): Newton Hard-Thresholding Pursuit 
+# NHTP: Newton Hard-Thresholding Pursuit 
 
 This Matlab solver was created based on the algorithm proposed by  
 
