@@ -10,7 +10,9 @@ switch test
   case 1       % Input data by our data generation function
        ExMat   = 1;
        MatType = {'GaussianMat','PartialDCTMat'}; 
-       data    = compressed_sensing_data(MatType{ExMat},m,n,s,0);
+       nf      = 0;
+       data    = compressed_sensing_data(MatType{ExMat},m,n,s,nf);
+       pars.eta= 0.5*(nf>0)+(nf==0);
   case 2       % Input any data including (data.A, data.At, data.b), e.g.,
        data.A  = randn(m,n)/sqrt(m);
        data.At = data.A';
