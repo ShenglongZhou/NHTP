@@ -17,7 +17,6 @@ end
 SucRate      = [];
 pars.display = 0;
 pars.draw    = 0;
-par.eta      = 5; 
 for j        = 1:length(sm)
     rate     = 0; 
     switch  test
