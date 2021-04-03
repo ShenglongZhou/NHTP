@@ -246,7 +246,7 @@ if display
       fprintf(' because of ||gradient|| = %5.2e!\n',Out.normgrad); 
       if Out.iter>1500
       fprintf('\n Since the number of iterations reaches to %d\n',Out.iter);
-      fprintf(' Try to rerun the solver with a smaller pars.eta = %5.2e\n',Out.eta); 
+      fprintf(' Try to rerun the solver with a smaller pars.eta = %5.2e\n',pars.eta); 
       end
       fprintf(' ------------------------------------------------\n');
    end
