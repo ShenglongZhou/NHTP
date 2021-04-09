@@ -78,7 +78,7 @@ FNorm   = @(x)norm(x)^2;
 if  display 
     fprintf(' Start to run the solver -- NHTP \n');
     fprintf(' ------------------------------------------------\n');
-    fprintf(' Iter       Error         Ojective         Time \n'); 
+    fprintf(' Iter       Error         Objective         Time \n'); 
     fprintf(' ------------------------------------------------\n');
 end
 
