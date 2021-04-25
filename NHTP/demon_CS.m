@@ -8,16 +8,21 @@ test  = 1;
 
 switch test
   case 1       % Input data by our data generation function
-       ExMat   = 1;
-       MatType = {'GaussianMat','PartialDCTMat'}; 
-       nf      = 0;
-       data    = compressed_sensing_data(MatType{ExMat},m,n,s,nf);
-       pars.eta= 0.5*(nf>0)+(nf==0);
+       ExMat    = 1;
+       MatType  = {'GaussianMat','PartialDCTMat'}; 
+       nf       = 0;
+       data     = compressed_sensing_data(MatType{ExMat},m,n,s,nf);
+       if nf    > 0; pars.eta = 0.5; end
   case 2       % Input any data including (data.A, data.At, data.b), e.g.,
-       data.A  = randn(m,n)/sqrt(m);
-       data.At = data.A';
-       data.b  = randn(m,1)/sqrt(m);  
-       pars.eta= 1;
+       data.A   = randn(m,n);
+       data.A   = normalization(data.A,3);
+       data.At  = data.A';
+       I        = randperm(n); 
+       Tx       = I(1:s);
+       xopt     = zeros(n,1);  
+       xopt(Tx) = randn(s,1); 
+       data.b   = data.A*xopt;  
+       data.xopt= xopt; 
 end
  
 pars.draw = 0;
