@@ -29,6 +29,6 @@ out       = NHTP('CS',data,n,s,pars);
 fprintf(' CPU time:          %.3fsec\n',  out.time);
 fprintf(' Objective:         %5.2e\n',  out.obj);
 fprintf(' Sample size:       %dx%d\n', m,n);
-if isfield(data,'xopt') && s<=100
+if isfield(data,'xopt') && s<=1000
    ReoveryShow(data.xopt,out.sol,[1000, 550, 400 200],1)
 end
