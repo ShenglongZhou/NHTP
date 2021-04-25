@@ -66,7 +66,6 @@ x(I)      = randn(s,1);
 data.A    = randn(m,n)/sqrt(n);
 data.At   = data.A';
 data.b    = data.A(:,I)*x(I);
-pars.eta  = 1;
 out       = NHTP('CS',data,n,s,pars);
 ReoveryShow(out.sol,x,[900,500,500,250],1)
 
@@ -85,7 +84,6 @@ data.At   = data.A';
 Ax        = data.A(:,T)*x(T);
 data.b    = abs(Ax); 
 data.b(T) = -Ax(T); 
-pars.eta  = 1;
 out       = NHTP('LCP',data,n,s,pars);
 ReoveryShow(out.sol,x,[900,500,500,250],1)
 
