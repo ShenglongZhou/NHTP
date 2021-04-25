@@ -217,8 +217,8 @@ for iter = 1:itmax
 end
 
 
-x(abs(x)<1e-4)=0;
-[obj ,g]    = func(x,'ObjGrad',[],[]);
+% x(abs(x)<1e-4)=0;
+% [obj ,g]    = func(x,'ObjGrad',[],[]);
 % results output
 time        = toc(t0);
 Out.sparsity= nnz(x);
