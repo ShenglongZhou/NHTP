@@ -70,10 +70,11 @@ sigma   = 5e-5;
 I       = 1:n;
 delta   = 1e-10;
 pcgtol  = 0.1*tol*s;
-T0      = zeros(s,1);
+T0      = [];
 Error   = zeros(1,itmax);
 Obj     = zeros(1,itmax);
 FNorm   = @(x)norm(x)^2;
+xo      = zeros(n,1);
 
 if  display 
     fprintf(' Start to run the solver -- NHTP \n');
@@ -103,16 +104,17 @@ for iter = 1:itmax
      
     xtg   = x0-eta*g;
     [~,T] = maxk(abs(xtg),s); 
-    flag  = isempty(setdiff(T,T0));          
-    Tc    = setdiff(I,T);
+    TTc   = setdiff(T0,T);
+    flag  = isempty(TTc);    
+    gT    = g(T);
     
     % Calculate the error for stopping criteria   
-    xtaus       = max(0,max(abs(g(Tc)))-min(abs(x(T)))/eta);
+    xtaus       = max(0,max(abs(g))-min(abs(x(T)))/eta);
     if flag
-    FxT         = sqrt(FNorm(g(T)));
+    FxT         = sqrt(FNorm(gT));
     Error(iter) = xtaus + FxT;
     else
-    FxT         = sqrt(FNorm(g(T))+ FNorm(x(Tc)));
+    FxT         = sqrt(FNorm(gT)+ abs(FNorm(x)-FNorm(x(T))) );
     Error(iter) = xtaus + FxT;    
     end
      
@@ -128,18 +130,17 @@ for iter = 1:itmax
     if  iter   == 1 || flag           % update next iterate if T==supp(x^k)     
         H       =  func(x0,'Hess',T,[]); 
         if ~isa(H,'function_handle')
-            d   = -H\g(T);
+            d   = -H\gT;
         else
-           [d,~]= pcg(H,-g(T),pcgtol,50); 
+           [d,~]= pcg(H,-gT,pcgtol,50); 
         end
-        dg      = sum(d.*g(T));
-        ngT     = FNorm(g(T));
+        dg      = sum(d.*gT);
+        ngT     = FNorm(gT);
         if dg   > max(-delta*FNorm(d), -ngT) || isnan(dg) 
-        d       = -g(T); 
+        d       = -gT; 
         dg      = ngT; 
         end
-    else                              % update next iterate if T~=supp(x^k)
-        TTc     = intersect(T0,Tc); 
+    else                              % update next iterate if T~=supp(x^k) 
         [H,D]   = func(x0,'Hess',T,TTc);
         
         if isa(D,'function_handle')
@@ -149,27 +150,27 @@ for iter = 1:itmax
         end
         
         if ~isa(H,'function_handle')
-            d   = H\( Dx- g(T));
+            d   = H\( Dx-gT);
         else
-           [d,~]= pcg(H,Dx- g(T), pcgtol,50); 
+           [d,~]= pcg(H,Dx-gT, pcgtol,50); 
         end
         
         Fnz     = FNorm(x(TTc))/4/eta;
-        dgT     = sum(d.*g(T));
+        dgT     = sum(d.*gT);
         dg      = dgT-sum(x0(TTc).*g(TTc));
         
         delta0  = delta;
         if Fnz  > 1e-4; delta0 = 1e-4; end
-        ngT     = FNorm(g(T));
+        ngT     = FNorm(gT);
         if dgT  > max(-delta0*FNorm(d)+Fnz, -ngT) || isnan(dg) 
-        d       = -g(T); 
+        d       = -gT; 
         dg      = ngT; 
         end            
     end
     
 
     alpha    = 1; 
-    x(Tc)    = 0;    
+    x        = xo;    
     obj0     = obj;        
     Obj(iter)= obj;
     
