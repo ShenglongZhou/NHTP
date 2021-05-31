@@ -1,4 +1,4 @@
-function Out = NHTP(problem,data,n,s,pars)
+function Out = NHTP(func,n,s,pars)
 
 % This code aims at solving the sparsity constrained optimization with form
 %
@@ -7,32 +7,20 @@ function Out = NHTP(problem,data,n,s,pars)
 % where s is the given sparsity, which is << n.  
 %
 % Inputs:
-%     problem:  A text string for different problems to be solved, (required)
-%               = 'CS',  compressed sensing problems
-%               = 'LCP', linear complementarity problems
-%               = 'LR',  sparse logistic regression problems
-%               = 'SCO', other sparsity constrained optimization problems
-%     data    : A triple structure (data.A, data.At, data.b) (required)
-%               data.A, the measurement matrix, or a function handle @(x)A(x);
-%               data.At = data.A',or a function handle @(x)At(x);
-%               data.b, the observation vector 
-%     n       : Dimension of the solution x, (required)
-%     s       : Sparsity level of x, an integer between 1 and n-1, (required)           
+%     func:   A function handle defines (objective,gradient,sub-Hessain) (required)
+%     n       : Dimension of the solution x,                             (required)
+%     s       : Sparsity level of x, an integer between 1 and n-1,       (required) 
+%
 %     pars:     Parameters are all OPTIONAL
 %               pars.x0      --  Starting point of x,   pars.x0=zeros(n,1) (default)
 %               pars.eta     --  A positive parameter,  a default one is given related to inputs  
-%               pars.display --  =1. Display results for each iteration.(default)
-%                                =0. Don't display results for each iteration.
-%               pars.draw    --  A  graph will be drawn if pars.draw=1 
-%                                No graph will be drawn if pars.draw=0 (default) 
+%               pars.display --  Display results or not for each iteration (default, 1)
+%               pars.draw    --  Draw or not draw a graph (default, 0) 
 %               pars.maxit   --  Maximum number of iterations, (default,2000) 
 %               pars.tol     --  Tolerance of the halting condition, (default,1e-6)
 %
 % Outputs:
 %     Out.sol:           The sparse solution x
-%     Out.sparsity:      Sparsity level of Out.sol
-%     Out.normgrad:      L2 norm of the gradient at Out.sol  
-%     Out.error:         Error used to terminate this solver 
 %     Out.time           CPU time
 %     Out.iter:          Number of iterations
 %     Out.obj:           Objective function value at Out.sol 
@@ -45,29 +33,20 @@ function Out = NHTP(problem,data,n,s,pars)
 
 warning off;
 t0  = tic;
-if  nargin<4
+if  nargin<3
     disp(' No enough inputs. No problems will be solverd!'); return;
 end
-if nargin < 5; pars = struct([]);  end 
+if nargin < 4; pars = [];  end 
 if isfield(pars,'display');display = pars.display;else; display = 1;    end
 if isfield(pars,'draw');   draw    = pars.draw;   else; draw    = 0;    end
 if isfield(pars,'maxit');  itmax   = pars.maxit;  else; itmax   = 2000; end
 if isfield(pars,'tol');    tol     = pars.tol;    else; tol     = 1e-6; end  
 if isfield(pars,'x0');     x0      = pars.x0;     else; x0 = zeros(n,1);end 
 
-switch problem
-    case 'CS' ;  fun  = @compressed_sensing;
-    case 'LCP';  fun  = @lcp;
-    case 'LR' ;  fun  = @logistic_regression; 
-    case 'SCO';  fun  = @sco; 
-end
-if isstruct(data);  data.n = n; end
-func    = @(x,key,T1,T2)fun(x,key,T1,T2,data); 
 [x0,obj,g,eta] = getparameters(n,s,x0,func,pars);  
 x       = x0;
 beta    = 0.5;
 sigma   = 5e-5;
-I       = 1:n;
 delta   = 1e-10;
 pcgtol  = 0.1*tol*s;
 T0      = [];
@@ -79,7 +58,7 @@ xo      = zeros(n,1);
 if  display 
     fprintf(' Start to run the solver -- NHTP \n');
     fprintf(' ------------------------------------------------\n');
-    fprintf(' Iter       Error         Objective         Time \n'); 
+    fprintf(' Iter       Error         Objective        Time \n'); 
     fprintf(' ------------------------------------------------\n');
 end
 
@@ -96,7 +75,7 @@ if  max(isnan(g))
     x0      = zeros(n,1);
     rind    = randi(n);
     x0(rind)= rand;
-    [obj,g] = func(x0,'ObjGrad',[],[]);
+    [obj,g] = func(x0,[],[]);
 end
  
 % The main body  
@@ -119,7 +98,8 @@ for iter = 1:itmax
     end
      
     if display 
-    fprintf('%4d       %5.2e       %5.2e      %6.3fsec\n',iter,Error(iter),obj,toc(t0)); 
+    fprintf('%4d       %5.2e       %5.2e      %6.3fsec\n',...
+            iter,Error(iter),obj,toc(t0)); 
     end
              
     % Stopping criteria
@@ -128,7 +108,7 @@ for iter = 1:itmax
     
     % update next iterate
     if  iter   == 1 || flag           % update next iterate if T==supp(x^k)     
-        H       =  func(x0,'Hess',T,[]); 
+        H       =  func(x0,T,[]); 
         if ~isa(H,'function_handle')
             d   = H\(-gT);
         else
@@ -141,8 +121,7 @@ for iter = 1:itmax
         dg      = ngT; 
         end
     else                              % update next iterate if T~=supp(x^k) 
-        [H,D]   = func(x0,'Hess',T,TTc);
-        
+        [H,D]   = func(x0,T,TTc); 
         if isa(D,'function_handle')
            Dx   = D(x0(TTc));
         else
@@ -177,7 +156,7 @@ for iter = 1:itmax
     % Amijio line search
     for i      = 1:6
         x(T)   = x0(T) + alpha*d;
-        obj    = func(x,'ObjGrad',[],[]);
+        obj    = func(x,[],[]);
         if obj < obj0  + alpha*sigma*dg; break; end        
         alpha  = beta*alpha;
     end
@@ -186,7 +165,7 @@ for iter = 1:itmax
     fhtp    = 0;
     if obj  > obj0 
        x(T) = xtg(T); 
-       obj  = func(x,'ObjGrad',[],[]); 
+       obj  = func(x,[],[]); 
        fhtp = 1;
     end
     
@@ -204,7 +183,7 @@ for iter = 1:itmax
  
     T0      = T; 
     x0      = x; 
-    [obj,g] = func(x,'ObjGrad',[],[]);
+    [obj,g] = func(x,[],[]);
     
     % Update eta
     if  mod(iter,50)==0  
@@ -219,11 +198,7 @@ end
 
 
 % results output
-time        = toc(t0);
-Out.sparsity= nnz(x);
-Out.normgrad= sqrt(FNorm(g)); 
-Out.error   = sqrt(FNorm(g(T))+ FNorm(x(setdiff(I,T))));
-Out.time    = time;
+Out.time    = toc(t0);
 Out.iter    = iter;
 Out.sol     = x;
 Out.obj     = obj; 
@@ -239,10 +214,11 @@ end
 
 
 if display 
+   normgrad = sqrt(FNorm(g)); 
    fprintf(' ------------------------------------------------\n');
-   if Out.normgrad<1e-5
+   if normgrad<1e-5
       fprintf(' A global optimal solution might be found\n');
-      fprintf(' because of ||gradient|| = %5.2e!\n',Out.normgrad); 
+      fprintf(' because of ||gradient|| = %5.2e!\n', normgrad); 
       if Out.iter>1500
       fprintf('\n Since the number of iterations reaches to %d\n',Out.iter);
       fprintf(' Try to rerun the solver with setting a smaller pars.eta \n'); 
@@ -258,8 +234,8 @@ end
 function [x0,obj,g,eta]=getparameters(n,s,x0,func,pars)
 
     if isfield(pars,'x0') && norm(x0)>0
-       [obj0,g0] = func(zeros(n,1),'ObjGrad',[],[]);  
-       [obj,g]   = func(pars.x0,'ObjGrad',[],[]); 
+       [obj0,g0] = func(zeros(n,1),[],[]);  
+       [obj,g]   = func(pars.x0,[],[]); 
        if obj0   < obj/10
           x0     =  zeros(n,1); 
           obj    = obj0;  
@@ -271,41 +247,40 @@ function [x0,obj,g,eta]=getparameters(n,s,x0,func,pars)
           x0       = pars.x0;  
           pars.eta = min(abs(x0(T)))/(1+max(abs(g(setdiff(1:n, T)))));   
           elseif ns0<s
-          x0        = pars.x0;  
-          pars.eta  = max(x0(x0>0.1))/(1+max(abs(g)));   
+          x0       = pars.x0;  
+          pars.eta = max(x0(x0>0.1))/(1+max(abs(g)));   
           else 
-          [~,T]     = maxk(pars.x0,s,'ComparisonMethod','abs'); 
-          x0        = zeros(n,1);
-          x0(T)     = pars.x0(T);  
-          pars.eta  = max(x0(x0>0.1))/(1+max(abs(g)));  
+          [~,T]    = maxk(pars.x0,s,'ComparisonMethod','abs'); 
+          x0       = zeros(n,1);
+          x0(T)    = pars.x0(T);  
+          pars.eta = max(x0(x0>0.1))/(1+max(abs(g)));  
           end
           
           if isempty(pars.eta) 
-          pars.eta  = max(abs(x0))/(1+max(abs(g))); 
-          end
-          
+          pars.eta = max(abs(x0))/(1+max(abs(g))); 
+          end          
        end
     else
-        [obj,g]  = func(x0,'ObjGrad',[],[]); 
+        [obj,g]  = func(x0,[],[]); 
     end
  
     
     if isfield(pars,'eta')      
-        eta  = pars.eta;       
+        eta    = pars.eta;       
     else % set a proper parameter eta
-        [~,g1] = func(ones(n,1),'ObjGrad',[],[]) ;
+        [~,g1] = func(ones(n,1),[],[]) ;
         abg1   = abs(g1);
         T      = find(abg1>1e-8);
         maxe   = sum(1./(abg1(T)+eps))/nnz(T);
         if  isempty(T) 
-            eta    = 10*(1+s/n)/min(10, log(n));
+            eta = 10*(1+s/n)/min(10, log(n));
         else
             if maxe>2
-            eta  = (log2(1+maxe)/log2(maxe))*exp((s/n)^(1/3));
+                eta  = (log2(1+maxe)/log2(maxe))*exp((s/n)^(1/3));
             elseif maxe<1
-            eta  = (log2(1+ maxe))*(n/s)^(1/2);    
+                eta  = (log2(1+ maxe))*(n/s)^(1/2);    
             else
-            eta  = (log2(1+ maxe))*exp((s/n)^(1/3));
+                eta  = (log2(1+ maxe))*exp((s/n)^(1/3));
             end     
         end
     end 
