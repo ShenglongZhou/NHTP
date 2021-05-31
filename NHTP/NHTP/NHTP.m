@@ -130,7 +130,7 @@ for iter = 1:itmax
     if  iter   == 1 || flag           % update next iterate if T==supp(x^k)     
         H       =  func(x0,'Hess',T,[]); 
         if ~isa(H,'function_handle')
-            d   = -H\gT;
+            d   = H\(-gT);
         else
            [d,~]= pcg(H,-gT,pcgtol,50); 
         end
@@ -218,8 +218,6 @@ for iter = 1:itmax
 end
 
 
-% x(abs(x)<1e-4)=0;
-% [obj ,g]    = func(x,'ObjGrad',[],[]);
 % results output
 time        = toc(t0);
 Out.sparsity= nnz(x);
