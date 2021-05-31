@@ -1,5 +1,5 @@
 % demon a general sparsity constrained problem
-function demon_sco()
+function demon_SCO()
 clc; clear; close all;
 pars.eta  = 0.1;
 n         = 2;
