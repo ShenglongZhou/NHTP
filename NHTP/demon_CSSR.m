@@ -24,7 +24,7 @@ for j        = 1:length(sm)
     case 2; m = ceil(sm(j)*n);
     end    
     for S = 1:noS         
-        data = compressed_sensing_data(MatType{ExMat},m,n,s,0 );       
+        data = CSdata(MatType{ExMat},m,n,s,0 );       
         func = @(x,T1,T2)CS(x,T1,T2,data);
         out  = NHTP(func,n,s,pars); clc; SucRate     
         rate = rate + (norm(out.sol-data.xopt)/norm(data.xopt)<1e-2); 
