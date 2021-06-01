@@ -8,8 +8,8 @@ function Out = NHTP(func,n,s,pars)
 %
 % Inputs:
 %     func:   A function handle defines (objective,gradient,sub-Hessain) (required)
-%     n       : Dimension of the solution x,                             (required)
-%     s       : Sparsity level of x, an integer between 1 and n-1,       (required) 
+%     n       : Dimension of the solution x                              (required)
+%     s       : Sparsity level of x, an integer between 1 and n-1        (required) 
 %
 %     pars:     Parameters are all OPTIONAL
 %               pars.x0      --  Starting point of x,   pars.x0=zeros(n,1) (default)
