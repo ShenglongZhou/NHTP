@@ -14,7 +14,7 @@ if ~isa(data.A, 'function_handle') % A is a matrix
         end
     else        
             AT = data.A(:,T1); 
-        if  length(T1)<3000
+        if  length(T1)<2000
             out1 = AT'*AT;                        %subHessian containing T1 rows and T1 columns
         else
             out1 = @(v)( (AT*v)'*AT )';      
