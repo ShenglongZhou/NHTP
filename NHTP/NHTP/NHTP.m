@@ -112,7 +112,7 @@ for iter = 1:itmax
         if ~isa(H,'function_handle')
             d   = H\(-gT);
         else
-           [d,~]= pcg(H,-gT,pcgtol,50); 
+            d   = my_cg(H,-gT,pcgtol,50,zeros(s,1)); 
         end
         dg      = sum(d.*gT);
         ngT     = FNorm(gT);
@@ -131,7 +131,7 @@ for iter = 1:itmax
         if ~isa(H,'function_handle')
             d   = H\( Dx-gT);
         else
-           [d,~]= pcg(H,Dx-gT, pcgtol,50); 
+            d   = my_cg(H,Dx-gT,pcgtol,50,zeros(s,1)); 
         end
         
         Fnz     = FNorm(x(TTc))/4/eta;
@@ -298,3 +298,28 @@ function  PlotFun(input,iter,c, key)
     
 end
 
+% conjugate gradient-------------------------------------------------------
+function x = my_cg(fx,b,cgtol,cgit,x)
+    r = b;
+    e = sum(r.*r);
+    t = e;
+    for i = 1:cgit  
+        if e < cgtol*t; break; end
+        if  i == 1  
+            p = r;
+        else
+            p = r + (e/e0)*p;
+        end  
+        if  isa(fx,'function_handle')
+            w  = fx(p);
+        else
+            w  = fx*p;
+        end
+        a  = e/sum(p.*w);
+        x  = x + a * p;
+        r  = r - a * w;
+        e0 = e;
+        e  = sum(r.*r);
+    end 
+  
+end
