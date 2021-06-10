@@ -14,8 +14,7 @@ function ReoveryShow(xo,x,pos,ind)
        st1   = strcat('Recovery accuracy = ',num2str(snr,4));         
        title(strcat(st1))
        set(0,'DefaultAxesTitleFontWeight','normal');
-
-       legend('Ground-Truth', 'Recovered', 'Location', 'best')
+       legend('Ground-Truth', 'Recovered')
     end
 end
 
