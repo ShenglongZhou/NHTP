@@ -52,7 +52,7 @@ pcgtol  = 0.1*tol*s;
 T0      = [];
 Error   = zeros(1,itmax);
 Obj     = zeros(1,itmax);
-FNorm   = @(x)norm(x)^2;
+Fnorm   = @(var)norm(var,'fro')^2;
 xo      = zeros(n,1);
 
 if  display 
