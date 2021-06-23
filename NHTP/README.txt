@@ -43,7 +43,7 @@ Please give credits to this paper if you use the code for your research.
 % Here are some examples that you can run
 % =================================================================
 % Example I:  compressed sensing problem
-
+clc; close all;
 n         = 10000; 
 m         = ceil(0.25*n);
 s         = ceil(0.05*n);     
@@ -59,7 +59,7 @@ RecoverShow(x,out.sol,[900,500,500,250],1)
 
 % =================================================================
 % Example II:  linear complementarity problem 
-
+clc; close all;
 n         = 10000; 
 s         = ceil(0.01*n);     
 x         = zeros(n,1);
@@ -78,7 +78,7 @@ RecoverShow(x,out.sol,[900,500,500,250],1)
 
 % =================================================================
 % Example III:  Logistic regression problem
-
+clc; close all;
 n         = 10000; 
 m         = ceil(0.25*n);
 s         = ceil(0.05*n);     
