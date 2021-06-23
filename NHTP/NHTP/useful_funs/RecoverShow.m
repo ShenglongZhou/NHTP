@@ -1,4 +1,4 @@
-function ReoveryShow(xo,x,pos,ind)
+function RecoverShow(xo,x,pos,ind)
 
     figure('Renderer', 'painters', 'Position', pos)
     axes('Position', [0.05 0.1 0.9 0.8] );
