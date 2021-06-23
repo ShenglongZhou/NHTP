@@ -29,4 +29,4 @@ out       = NHTP(func,n,s,pars);
 fprintf(' CPU time:          %.3fsec\n',  out.time);
 fprintf(' Objective:         %5.2e\n',  out.obj);
 fprintf(' Sample size:       %dx%d\n', m,n);
-ReoveryShow(xopt,out.sol,[900,500,500,250],1)
+RecoverShow(xopt,out.sol,[900,500,500,250],1)
