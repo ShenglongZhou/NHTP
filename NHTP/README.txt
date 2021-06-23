@@ -55,7 +55,7 @@ data.A    = randn(m,n)/sqrt(m);
 data.b    = data.A(:,I)*x(I);
 func      = @(x,T1,T2)CS(x,T1,T2,data);
 out       = NHTP(func,n,s); 
-ReoveryShow(x,out.sol,[900,500,500,250],1)
+RecoverShow(x,out.sol,[900,500,500,250],1)
 
 % =================================================================
 % Example II:  linear complementarity problem 
@@ -74,7 +74,7 @@ data.b    = abs(Ax);
 data.b(T) = -Ax(T); 
 func      = @(x,T1,T2)LCP(x,T1,T2,data);
 out       = NHTP(func,n,s);
-ReoveryShow(x,out.sol,[900,500,500,250],1)
+RecoverShow(x,out.sol,[900,500,500,250],1)
 
 % =================================================================
 % Example III:  Logistic regression problem
