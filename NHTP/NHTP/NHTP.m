@@ -39,10 +39,10 @@ end
 if nargin < 4; pars = [];  end 
 if isfield(pars,'display');display = pars.display;else; display = 1;    end
 if isfield(pars,'draw');   draw    = pars.draw;   else; draw    = 0;    end
-if isfield(pars,'maxit');  itmax   = pars.maxit;  else; itmax   = 2000; end
+if isfield(pars,'maxit');  maxit   = pars.maxit;  else; maxit   = 2000; end
 if isfield(pars,'tol');    tol     = pars.tol;    else; tol     = 1e-6; end  
 if isfield(pars,'x0');     x0      = pars.x0;     else; x0 = zeros(n,1);end 
-
+ 
 [x0,obj,g,eta] = getparameters(n,s,x0,func,pars);  
 x       = x0;
 beta    = 0.5;
@@ -50,8 +50,8 @@ sigma   = 5e-5;
 delta   = 1e-10;
 pcgtol  = 0.1*tol*s;
 T0      = [];
-Error   = zeros(1,itmax);
-Obj     = zeros(1,itmax);
+Error   = zeros(1,maxit);
+Obj     = zeros(1,maxit);
 FNorm   = @(var)norm(var,'fro')^2;
 xo      = zeros(n,1);
 
@@ -79,7 +79,7 @@ if  max(isnan(g))
 end
  
 % The main body  
-for iter = 1:itmax
+for iter = 1:maxit
      
     xtg   = x0-eta*g;
     [~,T] = maxk(abs(xtg),s); 
