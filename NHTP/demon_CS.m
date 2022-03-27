@@ -28,5 +28,6 @@ func      = @(x,T1,T2)CS(x,T1,T2,data);
 out       = NHTP(func,n,s,pars);  
 fprintf(' CPU time:          %.3fsec\n',  out.time);
 fprintf(' Objective:         %5.2e\n',  out.obj);
+fprintf(' True Objective:    %5.2e\n',  norm(data.A*xopt-data.b)^2/2);
 fprintf(' Sample size:       %dx%d\n', m,n);
 RecoverShow(xopt,out.sol,[900,500,500,250],1)
