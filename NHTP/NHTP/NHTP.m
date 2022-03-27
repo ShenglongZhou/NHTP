@@ -82,7 +82,8 @@ end
 for iter = 1:maxit
      
     xtg   = x0-eta*g;
-    [~,T] = maxk(abs(xtg),s); 
+    [~,T] = maxk(abs(xtg),s);  
+    T     = sort(T);
     TTc   = setdiff(T0,T);
     flag  = isempty(TTc);    
     gT    = g(T);
@@ -105,9 +106,8 @@ for iter = 1:maxit
     % Stopping criteria
     if Error(iter)<tol; break;  end
     
-    
     % update next iterate
-    if  iter   == 1 || flag           % update next iterate if T==supp(x^k)     
+    if  iter   == 1 || flag           % update next iterate if T==supp(x^k)   c
         H       =  func(x0,T,[]); 
         if ~isa(H,'function_handle')
             d   = H\(-gT);
@@ -117,23 +117,16 @@ for iter = 1:maxit
         dg      = sum(d.*gT);
         ngT     = FNorm(gT);
         if dg   > max(-delta*FNorm(d), -ngT) || isnan(dg) 
-        d       = -gT; 
-        dg      = ngT; 
+            d   = -gT; 
+            dg  = ngT; 
         end
     else                              % update next iterate if T~=supp(x^k) 
         [H,D]   = func(x0,T,TTc); 
-        if isa(D,'function_handle')
-           Dx   = D(x0(TTc));
-        else
-           Dx   = D*x0(TTc);
-        end
-        
-        if ~isa(H,'function_handle')
-            d   = H\( Dx-gT);
-        else
-            d   = my_cg(H,Dx-gT,pcgtol,50,zeros(s,1)); 
-        end
-        
+        if isa(H,'function_handle')
+           d    = my_cg(H,D(x0(TTc))-gT,pcgtol,50,zeros(s,1)); 
+        else       
+           d    = H\(D(x0(TTc))-gT); 
+        end              
         Fnz     = FNorm(x(TTc))/4/eta;
         dgT     = sum(d.*gT);
         dg      = dgT-sum(x0(TTc).*g(TTc));
@@ -142,18 +135,18 @@ for iter = 1:maxit
         if Fnz  > 1e-4; delta0 = 1e-4; end
         ngT     = FNorm(gT);
         if dgT  > max(-delta0*FNorm(d)+Fnz, -ngT) || isnan(dg) 
-        d       = -gT; 
-        dg      = ngT; 
-        end            
+            d   = -gT; 
+            dg  = ngT; 
+        end
     end
     
-
     alpha    = 1; 
     x        = xo;    
     obj0     = obj;        
     Obj(iter)= obj;
     
     % Amijio line search
+
     for i      = 1:6
         x(T)   = x0(T) + alpha*d;
         obj    = func(x,[],[]);
