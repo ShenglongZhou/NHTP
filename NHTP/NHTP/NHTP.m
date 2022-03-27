@@ -121,11 +121,16 @@ for iter = 1:maxit
             dg  = ngT; 
         end
     else                              % update next iterate if T~=supp(x^k) 
-        [H,D]   = func(x0,T,TTc); 
-        if isa(H,'function_handle')
-           d    = my_cg(H,D(x0(TTc))-gT,pcgtol,50,zeros(s,1)); 
+        [H,D]   = func(x0,T,TTc);
+        if isa(D,'function_handle')
+           Dx  = D(x0(TTc)); 
         else       
-           d    = H\(D(x0(TTc))-gT); 
+           Dx  = D*x0(TTc); 
+        end        
+        if isa(H,'function_handle')
+           d    = my_cg(H,Dx-gT,pcgtol,50,zeros(s,1)); 
+        else       
+           d    = H\(Dx-gT); 
         end              
         Fnz     = FNorm(x(TTc))/4/eta;
         dgT     = sum(d.*gT);
