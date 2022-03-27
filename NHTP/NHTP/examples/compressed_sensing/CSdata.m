@@ -54,6 +54,7 @@ xopt     = zeros(n,1);
 while nnz(xopt)~= s  
       xopt(I)   = randn(s,1); 
 end
+xopt(I)    = xopt(I) + 5*nf*sign(xopt(I));
 data.A     = normalization(A, 3);                   % required
 data.b     = data.A(:,I)*xopt(I)+nf*randn(m,1);     % required
 data.xopt  = xopt;                                  % optional
