@@ -5,15 +5,15 @@ function Out = NHTP(func,n,s,pars)
 %         min_{x\in R^n} f(x)  s.t.  \|x\|_0<=s
 %
 % where s is the given sparsity, which is << n.  
-%
+%--------------------------------------------------------------------------
 % Inputs:
 %     func:  A function handle defines (objective,gradient,sub-Hessain) (required)
 %     n   :  Dimension of the solution x                                (required)
 %     s   :  Sparsity level of x, an integer between 1 and n-1          (required) 
 %
 %     pars:  Parameters are all OPTIONAL
-%            pars.x0      --  Starting point of x,   pars.x0=zeros(n,1) (default)
-%            pars.eta     --  A positive parameter,  a default one is given related to inputs  
+%            pars.x0      --  Starting point of x,  pars.x0=zeros(n,1) (default)
+%            pars.eta     --  A positive parameter, a default one is given related to inputs  
 %            pars.display --  Display results or not for each iteration (default, 1)
 %            pars.draw    --  Draw or not draw a graph (default, 0) 
 %            pars.maxit   --  Maximum number of iterations, (default,2000) 
@@ -24,12 +24,13 @@ function Out = NHTP(func,n,s,pars)
 %     Out.time:   CPU time
 %     Out.iter:   Number of iterations
 %     Out.obj :   Objective function value at Out.sol 
-%
+%--------------------------------------------------------------------------
 % This code is programmed based on the algorithm proposed in 
 % "S. Zhou, N. Xiu and H. Qi, Global and Quadratic Convergence of Newton 
 % Hard-Thresholding Pursuit, Journal of Machine Learning Research, 2019."
-% Send your comments and suggestions to <<< slzhou2021@163.com >>> 
+% Send your comments and suggestions to <<< shenglong.zhou@soton.ac.uk >>> 
 % Warning: Accuracy may not be guaranteed !!!!! 
+%--------------------------------------------------------------------------
 
 warning off;
 t0  = tic;
@@ -89,18 +90,18 @@ for iter = 1:maxit
     gT    = g(T);
     
     % Calculate the error for stopping criteria   
-    xtaus       = max(0,max(abs(g))-min(abs(x(T)))/eta);
-    if flag
-    FxT         = sqrt(FNorm(gT));
-    Error(iter) = xtaus + FxT;
+    xtaus           = max(0,max(abs(g))-min(abs(x(T)))/eta);
+    if  flag
+        FxT         = sqrt(FNorm(gT));
+        Error(iter) = xtaus + FxT;
     else
-    FxT         = sqrt(FNorm(gT)+ abs(FNorm(x)-FNorm(x(T))) );
-    Error(iter) = xtaus + FxT;    
+        FxT         = sqrt(FNorm(gT)+ abs(FNorm(x)-FNorm(x(T))) );
+        Error(iter) = xtaus + FxT;    
     end
      
-    if display 
-    fprintf('%4d       %5.2e       %5.2e      %6.3fsec\n',...
-            iter,Error(iter),obj,toc(t0)); 
+    if  display 
+        fprintf('%4d       %5.2e       %5.2e      %6.3fsec\n',...
+                iter,Error(iter),obj,toc(t0)); 
     end
              
     % Stopping criteria
@@ -240,18 +241,18 @@ function [x0,obj,g,eta]=getparameters(n,s,x0,func,pars)
           g      = g0; 
        else  
           ns0    = nnz(pars.x0);
-          if ns0==s
-          [~,T]    = maxk(pars.x0,s,'ComparisonMethod','abs'); 
-          x0       = pars.x0;  
-          pars.eta = min(abs(x0(T)))/(1+max(abs(g(setdiff(1:n, T)))));   
+          if  ns0==s
+              [~,T]    = maxk(pars.x0,s,'ComparisonMethod','abs'); 
+              x0       = pars.x0;  
+              pars.eta = min(abs(x0(T)))/(1+max(abs(g(setdiff(1:n, T)))));   
           elseif ns0<s
-          x0       = pars.x0;  
-          pars.eta = max(x0(x0>0.1))/(1+max(abs(g)));   
+              x0       = pars.x0;  
+              pars.eta = max(x0(x0>0.1))/(1+max(abs(g)));   
           else 
-          [~,T]    = maxk(pars.x0,s,'ComparisonMethod','abs'); 
-          x0       = zeros(n,1);
-          x0(T)    = pars.x0(T);  
-          pars.eta = max(x0(x0>0.1))/(1+max(abs(g)));  
+              [~,T]    = maxk(pars.x0,s,'ComparisonMethod','abs'); 
+              x0       = zeros(n,1);
+              x0(T)    = pars.x0(T);  
+              pars.eta = max(x0(x0>0.1))/(1+max(abs(g)));  
           end
           
           if isempty(pars.eta) 
