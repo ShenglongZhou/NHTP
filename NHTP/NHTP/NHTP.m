@@ -7,28 +7,28 @@ function Out = NHTP(func,n,s,pars)
 % where s is the given sparsity, which is << n.  
 %
 % Inputs:
-%     func:   A function handle defines (objective,gradient,sub-Hessain) (required)
-%     n       : Dimension of the solution x                              (required)
-%     s       : Sparsity level of x, an integer between 1 and n-1        (required) 
+%     func:  A function handle defines (objective,gradient,sub-Hessain) (required)
+%     n   :  Dimension of the solution x                                (required)
+%     s   :  Sparsity level of x, an integer between 1 and n-1          (required) 
 %
-%     pars:     Parameters are all OPTIONAL
-%               pars.x0      --  Starting point of x,   pars.x0=zeros(n,1) (default)
-%               pars.eta     --  A positive parameter,  a default one is given related to inputs  
-%               pars.display --  Display results or not for each iteration (default, 1)
-%               pars.draw    --  Draw or not draw a graph (default, 0) 
-%               pars.maxit   --  Maximum number of iterations, (default,2000) 
-%               pars.tol     --  Tolerance of the halting condition, (default,1e-6)
+%     pars:  Parameters are all OPTIONAL
+%            pars.x0      --  Starting point of x,   pars.x0=zeros(n,1) (default)
+%            pars.eta     --  A positive parameter,  a default one is given related to inputs  
+%            pars.display --  Display results or not for each iteration (default, 1)
+%            pars.draw    --  Draw or not draw a graph (default, 0) 
+%            pars.maxit   --  Maximum number of iterations, (default,2000) 
+%            pars.tol     --  Tolerance of the halting condition, (default,1e-6)
 %
 % Outputs:
-%     Out.sol:           The sparse solution x
-%     Out.time           CPU time
-%     Out.iter:          Number of iterations
-%     Out.obj:           Objective function value at Out.sol 
+%     Out.sol :   The sparse solution x
+%     Out.time:   CPU time
+%     Out.iter:   Number of iterations
+%     Out.obj :   Objective function value at Out.sol 
 %
 % This code is programmed based on the algorithm proposed in 
 % "S. Zhou, N. Xiu and H. Qi, Global and Quadratic Convergence of Newton 
 % Hard-Thresholding Pursuit, Journal of Machine Learning Research, 2019."
-% Send your comments and suggestions to <<< shenglong.zhou@soton.ac.uk >>> 
+% Send your comments and suggestions to <<< slzhou2021@163.com >>> 
 % Warning: Accuracy may not be guaranteed !!!!! 
 
 warning off;
