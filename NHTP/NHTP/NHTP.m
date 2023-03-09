@@ -28,7 +28,7 @@ function Out = NHTP(func,n,s,pars)
 % This code is programmed based on the algorithm proposed in 
 % "S. Zhou, N. Xiu and H. Qi, Global and Quadratic Convergence of Newton 
 % Hard-Thresholding Pursuit, Journal of Machine Learning Research, 2019."
-% Send your comments and suggestions to <<< shenglong.zhou@soton.ac.uk >>> 
+% Send your comments and suggestions to <<< slzhou2021@163.com >>> 
 % Warning: Accuracy may not be guaranteed !!!!! 
 %--------------------------------------------------------------------------
 
