@@ -7,4 +7,6 @@ S. Zhou, N. Xiu and H. Qi, [Global and Quadratic Convergence of Newton Hard-Thre
 
 [Publications](https://shenglongzhou.github.io/publications/) or [Google Scholar](https://scholar.google.com/citations?user=ecRgB8YAAAAJ&hl=en)
 
+Most of my software can be found here - [Software]（https://shenglongzhou.github.io/software/)
+
 Please give credits to this paper if you use the code for your research.
