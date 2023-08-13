@@ -25,6 +25,7 @@ switch example
          xopt    = zeros(n,1); 
          xopt(1) = 1;
          Mt      = M;
+         data.xopt = xopt;
     case 'sdp'
          Z       = randn(n,ceil(n/2));
          M       = Z*Z';
@@ -32,20 +33,18 @@ switch example
          Mx      = M(:,T)*xopt(T);
          q       = abs(Mx);
          q(T)    = -Mx(T); 
-         Mt      = M;
+         Mt      = M/n;
          M       = M/n;  
-         Mt      = Mt/n; 
          q       = q/n;
+         data.xopt = xopt;
     case 'sdp-non'
          Z       = rand(n,ceil(n/4));
-         M       = Z*Z';
-         [xopt,T]= get_sparse_x(n,s); 
-         Mx      = M(:,T)*xopt(T);
+         M       = Z*Z'; 
+         [~,T]   = get_sparse_x(n,s);
          q       = rand(n,1);
-         q(T)    = -Mx(T); 
-         Mt      = M;
+         q(T)    = -rand(s,1); 
+         Mt      = M/n;
          M       = M/n;  
-         Mt      = Mt/n; 
          q       = q/n;      
 end
     
@@ -53,7 +52,7 @@ data.A    = M;
 data.At   = Mt;
 data.b    = q;
 data.n    = n;
-data.xopt = xopt;
+
 clear M Mt xopt Mx q Z
 fprintf(' Data generation used %2.4f seconds.\n\n',toc(start)); 
 end
