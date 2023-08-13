@@ -2,7 +2,7 @@
 clc; clear; close all;                    
 n         = 10000;  
 s         = ceil(0.01*n);
-ExMat     = 3; %= 1, 2, 3
+ExMat     = 2; %= 1, 2, 3
 MatType   = {'z-mat','sdp','sdp-non'};
 data      = LCPdata(MatType{ExMat},n,s);
 func      = @(x,T1,T2)LCP(x,T1,T2,data);
