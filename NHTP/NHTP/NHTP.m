@@ -299,26 +299,21 @@ end
 
 % conjugate gradient-------------------------------------------------------
 function x = my_cg(fx,b,cgtol,cgit,x)
+    if ~isa(fx,'function_handle'); fx = @(v)fx*v; end
     r = b;
-    e = sum(r.*r);
+    if nnz(x)>0; r = b - fx(x);  end
+    e = norm(r,'fro')^2;
     t = e;
+    p = r;
     for i = 1:cgit  
         if e < cgtol*t; break; end
-        if  i == 1  
-            p = r;
-        else
-            p = r + (e/e0)*p;
-        end  
-        if  isa(fx,'function_handle')
-            w  = fx(p);
-        else
-            w  = fx*p;
-        end
-        a  = e/sum(p.*w);
+        w  = fx(p);
+        pw = p.*w;
+        a  = e/sum(pw(:));
         x  = x + a * p;
         r  = r - a * w;
         e0 = e;
-        e  = sum(r.*r);
+        e  = norm(r,'fro')^2;
+        p  = r + (e/e0)*p;
     end 
-  
 end
