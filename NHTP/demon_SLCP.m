@@ -6,7 +6,8 @@ ExMat     = 2; %= 1, 2, 3
 MatType   = {'z-mat','sdp','sdp-non'};
 data      = LCPdata(MatType{ExMat},n,s);
 func      = @(x,T1,T2)LCP(x,T1,T2,data);
-out       = NHTP(func,n,s);
+pars.eta  = 1 + 4*(n<=1000);
+out       = NHTP(func,n,s,pars);
 
 fprintf(' CPU time:          %.3fsec\n',  out.time);
 fprintf(' Objective:         %5.2e\n',  out.obj);
