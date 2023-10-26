@@ -1,9 +1,9 @@
 % This code demonstrates the success recovery rate in compressed sensing
 clc; clear; close all; 
 
-test    = 1; %=1 succ rate v.s. s; =2 succ rate v.s. m/n
-ExMat   = 1; %=1 Gaussian matrix;  =2 Partial DCT matrix
-
+test    = 1;    %=1 succ rate v.s. s; =2 succ rate v.s. m/n
+ExMat   = 1;    %=1 Gaussian matrix;  =2 Partial DCT matrix
+nf      = 0.01; % noisy level
 n       = 256; 
 m       = ceil(0.25*n);
 s       = ceil(0.05*n);
@@ -24,10 +24,14 @@ for j        = 1:length(sm)
     case 2; m = ceil(sm(j)*n);
     end    
     for S = 1:noS         
-        data = CSdata(MatType{ExMat},m,n,s,0 );       
+        data = CSdata(MatType{ExMat},m,n,s,nf);       
         func = @(x,T1,T2)CS(x,T1,T2,data);
         out  = NHTP(func,n,s,pars); clc; SucRate     
-        rate = rate + (norm(out.sol-data.xopt)/norm(data.xopt)<1e-2); 
+        if nf > 0 
+            rate = rate + (norm(data.A*out.sol-data.b)<norm(data.A*data.xopt-data.b));  
+        else         
+            rate = rate + (norm(out.sol-data.xopt)/norm(data.xopt)<1e-2); 
+        end 
     end
     clc; SucRate  = [SucRate rate]  
     
@@ -40,5 +44,3 @@ for j        = 1:length(sm)
     legend('NHTP','Location','NorthEast'); hold on, pause(0.1)
     
 end
-
-
